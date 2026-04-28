@@ -35,13 +35,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // but let's keep it simple for now as per instructions.
 
   return (
-    <AppShell
-      title="" // Title will be set by pages via a context or we can pass it down
-      orgName={org?.name}
-      userEmail={user?.email}
-      unreadAlerts={unread}
-      onLogout={handleLogout}
-    >
+    <AppShell unreadAlerts={unread}>
       {children}
     </AppShell>
   );

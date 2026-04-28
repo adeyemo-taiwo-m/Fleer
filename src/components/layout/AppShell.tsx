@@ -11,12 +11,12 @@ interface AppShellProps {
 }
 
 export function AppShell({ children, unreadAlerts = 0 }: AppShellProps) {
-  const { organization, user, logout } = useOrganization();
+  const { org, user, logout } = useOrganization();
 
   return (
     <div className="min-h-screen bg-fleer-bg flex font-body">
       <Sidebar 
-        orgName={organization?.name || ''} 
+        orgName={org?.name || ''} 
         userEmail={user?.email || ''} 
         unreadAlerts={unreadAlerts}
         onLogout={logout}
