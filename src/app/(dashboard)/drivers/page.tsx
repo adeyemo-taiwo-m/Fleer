@@ -9,22 +9,26 @@ export default function DriversPage() {
   const sorted = [...drivers].sort((a, b) => b.score - a.score);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="animate-in fade-in duration-500">
+      {/* Page Header */}
+      <header className="flex flex-row justify-between items-center pb-[var(--space-6)] border-b border-[var(--border-subtle)] mb-[var(--space-8)]">
         <div>
-          <h2 className="text-xl font-bold text-[#E2E8F0]">Driver Performance</h2>
-          <p className="text-sm text-[#64748B]">Monitoring safety scores and efficiency metrics</p>
+          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--text-primary)] tracking-tight">Driver Performance</h1>
+          <p className="text-[var(--text-sm)] text-[var(--text-secondary)] mt-1">Monitoring safety scores and efficiency metrics across the fleet</p>
         </div>
-      </div>
+        <div className="hidden md:block text-right text-[var(--text-xs)] text-[var(--text-muted)] font-mono">
+          Last updated: {new Date().toLocaleDateString()}
+        </div>
+      </header>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-[var(--space-6)]">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-64 bg-[#1A2235] rounded-xl animate-pulse border border-[#1E2D42]" />
+            <div key={i} className="h-64 bg-[var(--bg-card)] rounded-[var(--radius-xl)] animate-pulse border border-[var(--border-subtle)]" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-[var(--space-6)] items-start">
           {sorted.map((driver, index) => (
             <DriverScorecard key={driver.id} driver={driver} rank={index + 1} />
           ))}

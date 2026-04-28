@@ -3,13 +3,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Zap } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Zap, ShieldCheck, TrendingUp, Lock } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('demo@smartsales.ai');
+  const [password, setPassword] = useState('••••••••');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
@@ -35,99 +34,103 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0E1A] flex items-center justify-center p-6 relative overflow-hidden">
-      
-      {/* Background decoration */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#00C896] rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600 rounded-full blur-[120px]" />
-      </div>
-
-      <div className="w-full max-w-sm relative z-10">
+    <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center p-[var(--space-4)]">
+      <div className="max-w-[960px] w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-xl)] shadow-[0_24px_64px_rgba(0,0,0,0.5)] overflow-hidden grid grid-cols-1 md:grid-cols-2">
         
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-10">
-          <div className="w-16 h-16 rounded-2xl bg-[#00C896] flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(0,200,150,0.4)]">
-            <Zap size={32} className="text-[#0A0E1A]" fill="currentColor" />
+        {/* Left Panel */}
+        <div className="p-[var(--space-12)] bg-gradient-to-br from-[rgba(0,229,160,0.06)] to-transparent flex flex-col justify-between border-r border-[var(--border-subtle)]">
+          <div>
+            <div className="flex flex-row items-center gap-[var(--space-3)]">
+              <div className="w-8 h-8 rounded-lg bg-[var(--accent-green)] flex items-center justify-center text-[#0d1117] shadow-[0_0_12px_rgba(0,229,160,0.25)]">
+                <Zap size={16} fill="currentColor" />
+              </div>
+              <span className="text-[var(--text-xl)] font-[800] text-[var(--text-primary)] tracking-tight">Fleer</span>
+            </div>
+
+            <h1 className="text-[var(--text-4xl)] font-[800] leading-[1.1] text-[var(--text-primary)] mt-[var(--space-8)] tracking-tighter">
+              Welcome back to <br />
+              <span className="text-[var(--accent-green)]">Fleet Intelligence.</span>
+            </h1>
+
+            <div className="mt-[var(--space-8)] flex flex-col gap-[var(--space-6)]">
+              {[
+                { icon: ShieldCheck, title: "Secure Access", desc: "Enterprise-grade protection for your logistics data." },
+                { icon: TrendingUp, title: "Live Tracking", desc: "Monitor your entire fleet's health from one screen." },
+                { icon: Lock, title: "Revenue Shield", desc: "Keeping your fuel and assets safe 24/7." }
+              ].map((item, i) => (
+                <div key={i} className="flex flex-row gap-[var(--space-4)] items-start">
+                  <div className="w-[36px] h-[36px] bg-[var(--accent-green-dim)] text-[var(--accent-green)] rounded-full flex items-center justify-center shrink-0">
+                    <item.icon size={20} strokeWidth={2} />
+                  </div>
+                  <div>
+                    <h4 className="text-[var(--text-sm)] font-semibold text-[var(--text-primary)]">{item.title}</h4>
+                    <p className="text-[var(--text-xs)] text-[var(--text-secondary)] mt-[2px]">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <h1 className="font-bold text-3xl text-[#E2E8F0] tracking-tight">Fleer</h1>
-          <p className="text-[#64748B] text-sm mt-1">Fleet Intelligence & Revenue Protection</p>
+
+          <p className="text-[var(--text-xs)] text-[var(--text-muted)] font-bold uppercase tracking-[0.08em] mt-[var(--space-8)]">
+            &copy; 2026 Fleer Intelligence
+          </p>
         </div>
 
-        {/* Form */}
-        <div className="bg-[#1A2235]/80 backdrop-blur-xl border border-[#1E2D42] rounded-3xl p-8 shadow-2xl">
-          <h2 className="font-semibold text-[#E2E8F0] text-lg mb-6 text-center">Sign in to your account</h2>
-          
+        {/* Right Panel */}
+        <div className="p-[var(--space-12)] flex flex-col justify-center bg-[var(--bg-card)]/30">
+          <h2 className="text-[var(--text-2xl)] font-bold text-[var(--text-primary)] mb-[var(--space-2)]">Sign In</h2>
+          <p className="text-[var(--text-sm)] text-[var(--text-secondary)] mb-[var(--space-8)]">Access your enterprise dashboard</p>
+
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 mb-6">
-              <p className="text-xs text-red-400 font-medium">{error}</p>
+            <div className="bg-[var(--accent-red)]/10 border border-[var(--accent-red)]/20 rounded-[var(--radius-md)] px-4 py-3 mb-6">
+              <p className="text-[var(--text-xs)] text-[var(--accent-red)] font-semibold text-center">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-[var(--space-5)]">
             <div>
-              <label className="block text-[10px] font-bold text-[#64748B] mb-2 uppercase tracking-widest">
-                Email Address
-              </label>
+              <label className="block text-[var(--text-xs)] font-bold text-[var(--text-secondary)] uppercase tracking-[0.06em] mb-[var(--space-2)]">Work Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                placeholder="fleet@company.com"
-                className="w-full bg-[#111827] border border-[#1E2D42] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] placeholder:text-[#334155] focus:outline-none focus:border-[#00C896]/60 transition-all"
+                className="w-full h-[44px] bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[var(--radius-md)] px-[var(--space-4)] text-[var(--text-sm)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-green)] focus:ring-[3px] focus:ring-[var(--accent-green)]/15 transition-all"
               />
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-[10px] font-bold text-[#64748B] uppercase tracking-widest">
-                  Password
-                </label>
-                <a href="#" className="text-[10px] font-bold text-[#00C896] hover:underline uppercase tracking-widest">Forgot?</a>
-              </div>
+              <label className="block text-[var(--text-xs)] font-bold text-[var(--text-secondary)] uppercase tracking-[0.06em] mb-[var(--space-2)]">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                placeholder="••••••••"
-                className="w-full bg-[#111827] border border-[#1E2D42] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] placeholder:text-[#334155] focus:outline-none focus:border-[#00C896]/60 transition-all"
+                className="w-full h-[44px] bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[var(--radius-md)] px-[var(--space-4)] text-[var(--text-sm)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-green)] focus:ring-[3px] focus:ring-[var(--accent-green)]/15 transition-all"
               />
             </div>
 
-            <Button
+            <button
               type="submit"
-              variant="primary"
-              className="w-full py-4 text-base mt-2"
-              loading={loading}
+              disabled={loading}
+              className="w-full h-[48px] bg-[var(--accent-green)] text-[#0d1117] font-[700] text-[var(--text-sm)] rounded-[var(--radius-md)] border-none cursor-pointer transition-all duration-180 hover:bg-[#00c98a] hover:-translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign In
-            </Button>
+              {loading ? 'Authenticating...' : 'Sign In to Dashboard'}
+            </button>
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#1E2D42]"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-bold"><span className="bg-[#1A2235] px-4 text-[#334155]">Or</span></div>
-            </div>
-
-            <Button
+            <button
               type="button"
-              variant="secondary"
-              className="w-full py-3 text-sm border-[#00C896]/20 text-[#00C896] hover:bg-[#00C896]/5"
               onClick={handleDemoAccess}
+              className="w-full h-[44px] mt-[var(--space-4)] flex items-center justify-center text-[var(--text-sm)] text-[var(--text-secondary)] border border-[var(--border-default)] rounded-[var(--radius-md)] hover:border-[var(--border-default)] hover:text-[var(--text-primary)] hover:bg-white/[0.03] transition-all duration-180"
             >
               Explore Demo Mode
-            </Button>
+            </button>
           </form>
 
-          <p className="text-center text-xs text-[#64748B] mt-6">
-            Don't have an account? <Link href="/signup" className="text-[#00C896] font-bold hover:underline">Create one</Link>
+          <p className="text-[var(--text-xs)] text-[var(--text-secondary)] text-center mt-[var(--space-8)]">
+            New here? <Link href="/signup" className="text-[var(--accent-green)] font-bold hover:underline">Create an organization account</Link>
           </p>
         </div>
-
-        <p className="text-center text-xs text-[#64748B] mt-8">
-          &copy; 2026 Fleer Platform · All rights reserved.
-        </p>
       </div>
     </div>
   );

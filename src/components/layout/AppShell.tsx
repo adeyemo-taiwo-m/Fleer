@@ -1,40 +1,45 @@
+'use client';
+
 import React from 'react';
 import { Sidebar } from './Sidebar';
-import { TopBar } from './TopBar';
+import { useOrganization } from '@/hooks/useOrganization';
+import { Toaster } from 'react-hot-toast';
 
 interface AppShellProps {
   children: React.ReactNode;
-  title: string;
-  subtitle?: string;
-  isLive?: boolean;
-  topBarActions?: React.ReactNode;
-  orgName?: string;
-  userEmail?: string;
   unreadAlerts?: number;
-  onLogout?: () => void;
 }
 
-export function AppShell({
-  children, title, subtitle, isLive, topBarActions,
-  orgName = 'Fleer Demo', userEmail = 'demo@fleer.ng', unreadAlerts, onLogout
-}: AppShellProps) {
+export function AppShell({ children, unreadAlerts = 0 }: AppShellProps) {
+  const { organization, user, logout } = useOrganization();
+
   return (
-    <div className="min-h-screen bg-[#0A0E1A]">
-      <Sidebar
-        orgName={orgName}
-        userEmail={userEmail}
+    <div className="min-h-screen bg-[var(--bg-base)] flex selection:bg-[var(--accent-green)]/30">
+      <Sidebar 
+        orgName={organization?.name || ''} 
+        userEmail={user?.email || ''} 
         unreadAlerts={unreadAlerts}
-        onLogout={onLogout}
+        onLogout={logout}
       />
-      <TopBar
-        title={title}
-        subtitle={subtitle}
-        isLive={isLive}
-        actions={topBarActions}
-      />
-      <main className="ml-60 mt-14 p-6 min-h-[calc(100vh-3.5rem)]">
-        {children}
+      
+      <main className="flex-1 ml-[220px] min-h-screen flex flex-col">
+        <div className="w-full max-w-[1400px] mx-auto p-[var(--space-8)] flex-1">
+          {children}
+        </div>
       </main>
+
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: 'var(--bg-surface)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border-default)',
+            fontSize: 'var(--text-sm)',
+            borderRadius: 'var(--radius-md)',
+          },
+        }}
+      />
     </div>
   );
 }

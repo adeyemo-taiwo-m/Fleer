@@ -2,34 +2,49 @@
 
 import React from 'react';
 import { Driver } from '../../types';
-import { SCORE_COLOR } from '../../constants';
-import { Card } from '../ui/Card';
+import { AlertTriangle } from 'lucide-react';
+import { clsx } from 'clsx';
 
-interface ScoreRingProps { score: number; size?: number; }
+interface ScoreRingProps { 
+  score: number; 
+  size?: number; 
+}
 
-function ScoreRing({ score, size = 64 }: ScoreRingProps) {
-  const radius = (size - 8) / 2;
+const getScoreColor = (score: number) => {
+  if (score >= 80) return 'var(--score-high)';
+  if (score >= 60) return 'var(--score-mid)';
+  return 'var(--score-low)';
+};
+
+function ScoreRing({ score, size = 52 }: ScoreRingProps) {
+  const radius = (size - 6) / 2;
   const circumference = 2 * Math.PI * radius;
-  const progress = (score / 100) * circumference;
-  const color = SCORE_COLOR(score);
+  const strokeDashoffset = circumference - (score / 100) * circumference;
+  const color = getScoreColor(score);
+  
   return (
-    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-      <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="#1E2D42" strokeWidth={4} />
-      <circle
-        cx={size/2} cy={size/2} r={radius} fill="none"
-        stroke={color} strokeWidth={4}
-        strokeDasharray={`${progress} ${circumference}`}
-        strokeLinecap="round"
-        style={{ transition: 'stroke-dasharray 0.8s ease' }}
-      />
-      <text
-        x="50%" y="50%" textAnchor="middle" dominantBaseline="middle"
-        fill={color} fontSize="14" fontWeight="700" fontFamily="'Space Grotesk', sans-serif"
-        style={{ transform: 'rotate(90deg)', transformOrigin: '50% 50%' }}
+    <div className="relative flex items-center justify-center shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle 
+          cx={size/2} cy={size/2} r={radius} 
+          fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" 
+        />
+        <circle
+          cx={size/2} cy={size/2} r={radius} 
+          fill="none" stroke={color} strokeWidth="4"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          className="transition-all duration-1000 ease-out"
+        />
+      </svg>
+      <span 
+        className="absolute inset-0 flex items-center justify-center text-[var(--text-lg)] font-extrabold tracking-tighter"
+        style={{ color }}
       >
         {score}
-      </text>
-    </svg>
+      </span>
+    </div>
   );
 }
 
@@ -43,43 +58,61 @@ const scoreBreakdownLabels: Record<keyof Driver['score_breakdown'], string> = {
 
 export function DriverScorecard({ driver, rank }: { driver: Driver; rank?: number }) {
   return (
-    <Card className="p-5">
-      <div className="flex items-center gap-4 mb-4">
-        {rank && (
-          <span className="text-lg font-bold text-[#334155] w-6 text-center">#{rank}</span>
-        )}
-        <div className="w-10 h-10 rounded-full bg-[#00C896]/10 flex items-center justify-center text-[#00C896] font-bold">
-          {driver.name.charAt(0)}
+    <div className="group bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-[var(--radius-xl)] p-[var(--space-6)] shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] hover:border-[var(--border-default)] hover:-translate-y-0.5 transition-all duration-200">
+      
+      {/* Header */}
+      <div className="flex items-center gap-[var(--space-4)] mb-[var(--space-5)] relative">
+        <div className="relative">
+          {rank && (
+            <span className="absolute -top-1 -left-1 z-10 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[10px] font-bold text-[var(--text-muted)] w-5 h-5 rounded-full flex items-center justify-center">
+              #{rank}
+            </span>
+          )}
+          <div className="w-[44px] h-[44px] rounded-full bg-[var(--accent-green-dim)] flex items-center justify-center text-[var(--accent-green)] text-[var(--text-base)] font-bold border border-[var(--accent-green)]/10">
+            {driver.name.charAt(0)}
+          </div>
         </div>
-        <div className="flex-1">
-          <p className="font-semibold text-[#E2E8F0]">{driver.name}</p>
-          <p className="text-xs text-[#64748B]">{driver.trips_this_week} trips this week</p>
+
+        <div className="flex-1 min-w-0">
+          <p className="text-[var(--text-base)] font-bold text-[var(--text-primary)] leading-none">{driver.name}</p>
+          <p className="text-[var(--text-xs)] text-[var(--text-secondary)] mt-1">{driver.trips_this_week} trips this week</p>
         </div>
+
         <ScoreRing score={driver.score} />
       </div>
 
-      <div className="space-y-2">
-        {Object.entries(driver.score_breakdown).map(([key, value]) => (
-          <div key={key} className="flex items-center gap-2">
-            <span className="text-xs text-[#64748B] w-36 shrink-0">
-              {scoreBreakdownLabels[key as keyof Driver['score_breakdown']]}
-            </span>
-            <div className="flex-1 bg-[#111827] rounded-full h-1.5 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-700"
-                style={{ width: `${value}%`, background: SCORE_COLOR(value) }}
-              />
+      {/* Metrics */}
+      <div className="space-y-[var(--space-2)]">
+        {Object.entries(driver.score_breakdown).map(([key, value]) => {
+          const color = getScoreColor(value);
+          return (
+            <div key={key} className="flex items-center gap-[var(--space-3)]">
+              <span className="text-[var(--text-xs)] text-[var(--text-secondary)] w-[130px] shrink-0 truncate">
+                {scoreBreakdownLabels[key as keyof Driver['score_breakdown']]}
+              </span>
+              <div className="flex-1 bg-white/[0.08] rounded-full h-1 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-700 ease-out"
+                  style={{ width: `${value}%`, backgroundColor: color }}
+                />
+              </div>
+              <span className="text-[var(--text-xs)] text-[var(--text-secondary)] font-mono w-[24px] text-right shrink-0">
+                {value}
+              </span>
             </div>
-            <span className="text-xs font-mono text-[#64748B] w-8 text-right">{value}</span>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
+      {/* Anomaly Banner */}
       {driver.anomalies_this_week > 0 && (
-        <div className="mt-3 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
-          <p className="text-xs text-amber-400">⚠️ {driver.anomalies_this_week} anomalies this week</p>
+        <div className="mt-[var(--space-4)] bg-[var(--accent-yellow)]/10 border border-[var(--accent-yellow)]/25 rounded-[var(--radius-md)] p-[var(--space-2)] px-[var(--space-3)] flex items-center gap-[var(--space-2)]">
+          <AlertTriangle size={12} className="text-[var(--accent-yellow)]" />
+          <p className="text-[var(--text-xs)] text-[var(--accent-yellow)] font-semibold">
+            {driver.anomalies_this_week} anomalies detected this week
+          </p>
         </div>
       )}
-    </Card>
+    </div>
   );
 }

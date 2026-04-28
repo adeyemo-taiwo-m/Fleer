@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Zap } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Zap, ShieldCheck, TrendingUp, Lock, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function SignupPage() {
@@ -21,11 +20,7 @@ export default function SignupPage() {
     setLoading(true);
     setError('');
 
-    // 1. Sign up user
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
 
     if (authError) {
       setError(authError.message);
@@ -34,18 +29,7 @@ export default function SignupPage() {
     }
 
     if (authData.user) {
-      // 2. Create organization
-      const { error: orgError } = await supabase
-        .from('organizations')
-        .insert({
-          name: orgName,
-          // user_id is handled by RLS/Trigger ideally, but we'll assume a trigger or logic here
-        });
-
-      if (orgError) {
-        // We could handle this, but for now let's just proceed
-      }
-      
+      await supabase.from('organizations').insert({ name: orgName });
       setSuccess(true);
     }
     setLoading(false);
@@ -58,15 +42,21 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#0A0E1A] flex items-center justify-center p-6 text-center">
-        <div className="max-w-sm">
-          <div className="w-20 h-20 rounded-full bg-[#00C896]/10 flex items-center justify-center mx-auto mb-6 text-[#00C896]">
-            <Zap size={40} fill="currentColor" />
+      <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center p-[var(--space-6)]">
+        <div className="max-w-md w-full text-center space-y-[var(--space-8)]">
+          <div className="w-[80px] h-[80px] rounded-full bg-[var(--accent-green-dim)] flex items-center justify-center mx-auto text-[var(--accent-green)] border border-[var(--accent-green)]/20 shadow-[0_0_32px_rgba(0,229,160,0.1)]">
+            <CheckCircle2 size={48} strokeWidth={1.5} />
           </div>
-          <h2 className="text-2xl font-bold text-[#E2E8F0] mb-2">Check your email</h2>
-          <p className="text-[#64748B] mb-8">We've sent a confirmation link to {email}. Please verify your account to continue.</p>
-          <Link href="/login">
-            <Button variant="primary" className="w-full">Back to Login</Button>
+          <div className="space-y-[var(--space-3)]">
+            <h2 className="text-[var(--text-4xl)] font-[800] text-[var(--text-primary)] tracking-tighter">Check your email</h2>
+            <p className="text-[var(--text-lg)] text-[var(--text-secondary)] leading-relaxed">
+              We've sent an activation link to <span className="text-[var(--text-primary)] font-semibold">{email}</span>. Please verify your account to continue.
+            </p>
+          </div>
+          <Link href="/login" className="block pt-[var(--space-6)]">
+            <button className="w-full h-[52px] bg-[var(--accent-green)] text-[#0d1117] font-[800] text-[var(--text-base)] rounded-[var(--radius-md)] border-none cursor-pointer hover:bg-[#00c98a] hover:-translate-y-[2px] transition-all duration-200">
+              Return to Login
+            </button>
           </Link>
         </div>
       </div>
@@ -74,83 +64,113 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0E1A] flex items-center justify-center p-6 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#00C896] rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600 rounded-full blur-[120px]" />
-      </div>
+    <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center p-[var(--space-4)]">
+      <div className="max-w-[960px] w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-xl)] shadow-[0_24px_64px_rgba(0,0,0,0.5)] overflow-hidden grid grid-cols-1 md:grid-cols-2">
+        
+        {/* Left Panel */}
+        <div className="p-[var(--space-12)] bg-gradient-to-br from-[rgba(0,229,160,0.06)] to-transparent flex flex-col justify-between border-r border-[var(--border-subtle)]">
+          <div>
+            <div className="flex flex-row items-center gap-[var(--space-3)]">
+              <div className="w-8 h-8 rounded-lg bg-[var(--accent-green)] flex items-center justify-center text-[#0d1117] shadow-[0_0_12px_rgba(0,229,160,0.25)]">
+                <Zap size={16} fill="currentColor" />
+              </div>
+              <span className="text-[var(--text-xl)] font-[800] text-[var(--text-primary)] tracking-tight">Fleer</span>
+            </div>
 
-      <div className="w-full max-w-sm relative z-10">
-        <div className="flex flex-col items-center mb-10">
-          <div className="w-16 h-16 rounded-2xl bg-[#00C896] flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(0,200,150,0.4)]">
-            <Zap size={32} className="text-[#0A0E1A]" fill="currentColor" />
+            <h1 className="text-[var(--text-4xl)] font-[800] leading-[1.1] text-[var(--text-primary)] mt-[var(--space-8)] tracking-tighter">
+              Start building your <br />
+              <span className="text-[var(--accent-green)]">Fleet Defense.</span>
+            </h1>
+
+            <div className="mt-[var(--space-8)] flex flex-col gap-[var(--space-6)]">
+              {[
+                { icon: ShieldCheck, title: "Fraud Prevention", desc: "Automated siphoning detection and route compliance." },
+                { icon: TrendingUp, title: "Cost Efficiency", desc: "Reduce fuel variance by up to 15% in the first month." },
+                { icon: Lock, title: "Revenue Shield", desc: "Keeping your assets safe with 24/7 AI monitoring." }
+              ].map((item, i) => (
+                <div key={i} className="flex flex-row gap-[var(--space-4)] items-start">
+                  <div className="w-[36px] h-[36px] bg-[var(--accent-green-dim)] text-[var(--accent-green)] rounded-full flex items-center justify-center shrink-0">
+                    <item.icon size={20} strokeWidth={2} />
+                  </div>
+                  <div>
+                    <h4 className="text-[var(--text-sm)] font-semibold text-[var(--text-primary)]">{item.title}</h4>
+                    <p className="text-[var(--text-xs)] text-[var(--text-secondary)] mt-[2px]">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <h1 className="font-bold text-3xl text-[#E2E8F0] tracking-tight">Fleer</h1>
-          <p className="text-[#64748B] text-sm mt-1">Start Protecting Your Fleet</p>
+
+          <p className="text-[var(--text-xs)] text-[var(--text-muted)] font-bold uppercase tracking-[0.08em] mt-[var(--space-8)]">
+            &copy; 2026 Fleer Intelligence
+          </p>
         </div>
 
-        <div className="bg-[#1A2235]/80 backdrop-blur-xl border border-[#1E2D42] rounded-3xl p-8 shadow-2xl">
-          <h2 className="font-semibold text-[#E2E8F0] text-lg mb-6 text-center">Create your organization</h2>
-          
+        {/* Right Panel */}
+        <div className="p-[var(--space-12)] flex flex-col justify-center bg-[var(--bg-card)]/30">
+          <h2 className="text-[var(--text-2xl)] font-bold text-[var(--text-primary)] mb-[var(--space-2)]">Get Started</h2>
+          <p className="text-[var(--text-sm)] text-[var(--text-secondary)] mb-[var(--space-8)]">Register your logistics organization</p>
+
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 mb-6 text-center">
-              <p className="text-xs text-red-400 font-medium">{error}</p>
+            <div className="bg-[var(--accent-red)]/10 border border-[var(--accent-red)]/20 rounded-[var(--radius-md)] px-4 py-3 mb-6">
+              <p className="text-[var(--text-xs)] text-[var(--accent-red)] font-semibold text-center">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSignup} className="space-y-4">
+          <form onSubmit={handleSignup} className="space-y-[var(--space-5)]">
             <div>
-              <label className="block text-[10px] font-bold text-[#64748B] mb-2 uppercase tracking-widest">Company Name</label>
+              <label className="block text-[var(--text-xs)] font-bold text-[var(--text-secondary)] uppercase tracking-[0.06em] mb-[var(--space-2)]">Company Name</label>
               <input
                 type="text"
                 value={orgName}
                 onChange={e => setOrgName(e.target.value)}
                 required
                 placeholder="Logistics Hub Ltd"
-                className="w-full bg-[#111827] border border-[#1E2D42] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] placeholder:text-[#334155] focus:outline-none focus:border-[#00C896]/60 transition-all"
+                className="w-full h-[44px] bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[var(--radius-md)] px-[var(--space-4)] text-[var(--text-sm)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-green)] focus:ring-[3px] focus:ring-[var(--accent-green)]/15 transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-[#64748B] mb-2 uppercase tracking-widest">Email Address</label>
+              <label className="block text-[var(--text-xs)] font-bold text-[var(--text-secondary)] uppercase tracking-[0.06em] mb-[var(--space-2)]">Work Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                placeholder="admin@company.com"
-                className="w-full bg-[#111827] border border-[#1E2D42] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] placeholder:text-[#334155] focus:outline-none focus:border-[#00C896]/60 transition-all"
+                className="w-full h-[44px] bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[var(--radius-md)] px-[var(--space-4)] text-[var(--text-sm)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-green)] focus:ring-[3px] focus:ring-[var(--accent-green)]/15 transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-[#64748B] mb-2 uppercase tracking-widest">Password</label>
+              <label className="block text-[var(--text-xs)] font-bold text-[var(--text-secondary)] uppercase tracking-[0.06em] mb-[var(--space-2)]">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                placeholder="••••••••"
-                className="w-full bg-[#111827] border border-[#1E2D42] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] placeholder:text-[#334155] focus:outline-none focus:border-[#00C896]/60 transition-all"
+                className="w-full h-[44px] bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[var(--radius-md)] px-[var(--space-4)] text-[var(--text-sm)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-green)] focus:ring-[3px] focus:ring-[var(--accent-green)]/15 transition-all"
               />
             </div>
 
-            <Button type="submit" variant="primary" className="w-full py-4 text-base mt-2" loading={loading}>
-              Create Account
-            </Button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-[48px] bg-[var(--accent-green)] text-[#0d1117] font-[700] text-[var(--text-sm)] rounded-[var(--radius-md)] border-none cursor-pointer transition-all duration-180 hover:bg-[#00c98a] hover:-translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Creating Account...' : 'Create Organization'}
+            </button>
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#1E2D42]"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-bold"><span className="bg-[#1A2235] px-4 text-[#334155]">Or</span></div>
-            </div>
-
-            <Button type="button" variant="secondary" className="w-full py-3 text-sm border-[#00C896]/20 text-[#00C896] hover:bg-[#00C896]/5" onClick={handleDemoAccess}>
+            <button
+              type="button"
+              onClick={handleDemoAccess}
+              className="w-full h-[44px] mt-[var(--space-4)] flex items-center justify-center text-[var(--text-sm)] text-[var(--text-secondary)] border border-[var(--border-default)] rounded-[var(--radius-md)] hover:border-[var(--border-default)] hover:text-[var(--text-primary)] hover:bg-white/[0.03] transition-all duration-180"
+            >
               Explore Demo Mode
-            </Button>
+            </button>
           </form>
 
-          <p className="text-center text-xs text-[#64748B] mt-6">
-            Already have an account? <Link href="/login" className="text-[#00C896] font-bold hover:underline">Sign In</Link>
+          <p className="text-[var(--text-xs)] text-[var(--text-secondary)] text-center mt-[var(--space-8)]">
+            Already registered? <Link href="/login" className="text-[var(--accent-green)] font-bold hover:underline">Sign In Instead</Link>
           </p>
         </div>
       </div>

@@ -29,39 +29,40 @@ export function Sidebar({ orgName, userEmail, unreadAlerts = 0, onLogout }: Side
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-60 bg-[#111827] border-r border-[#1E2D42] flex flex-col z-30">
-
-      {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5 py-5 border-b border-[#1E2D42]">
-        <div className="w-8 h-8 rounded-lg bg-[#00C896] flex items-center justify-center shadow-[0_0_20px_rgba(0,200,150,0.3)]">
-          <Zap size={16} className="text-[#0A0E1A]" fill="currentColor" />
+    <aside className="fixed left-0 top-0 h-screen w-[220px] bg-[#111827] border-r border-[var(--border-subtle)] flex flex-col z-30">
+      
+      {/* Logo Area */}
+      <div className="h-[56px] flex items-center gap-[var(--space-3)] px-[var(--space-4)] border-b border-[var(--border-subtle)]">
+        <div className="w-8 h-8 rounded-lg bg-[var(--accent-green)] flex items-center justify-center shadow-[0_0_12px_rgba(0,229,160,0.25)]">
+          <Zap size={16} className="text-[#0d1117]" fill="currentColor" />
         </div>
-        <div>
-          <span className="font-bold text-[#E2E8F0] text-base tracking-tight">Fleer</span>
-          <p className="text-[#64748B] text-xs leading-none mt-0.5">Fleet Intelligence</p>
-        </div>
+        <span className="font-display font-extrabold text-[var(--text-xl)] text-[var(--text-primary)] tracking-tight">Fleer</span>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5 overflow-y-auto">
+      {/* Nav Section */}
+      <nav className="flex-1 px-[var(--space-3)] py-[var(--space-6)] flex flex-col gap-[var(--space-1)] overflow-y-auto">
+        <p className="px-[var(--space-3)] mb-[var(--space-2)] text-[var(--text-xs)] text-[var(--text-muted)] font-bold uppercase tracking-[0.08em]">
+          Menu
+        </p>
         {navItems.map(({ path, label, icon: Icon }) => {
-          const isActive = pathname === path || (path !== '/' && pathname.startsWith(path));
+          const isActive = pathname === path || (path !== '/dashboard' && pathname.startsWith(path));
           const hasAlert = label === 'Alerts' && unreadAlerts > 0;
+          
           return (
             <Link
               key={path}
               href={path}
               className={clsx(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                'flex items-center gap-[var(--space-3)] px-[var(--space-3)] h-[36px] rounded-[var(--radius-md)] transition-all duration-200',
                 isActive
-                  ? 'bg-[#00C896]/10 text-[#00C896] border-l-2 border-[#00C896] pl-[10px]'
-                  : 'text-[#64748B] hover:text-[#E2E8F0] hover:bg-[#1A2235]'
+                  ? 'bg-[var(--accent-green-dim)] text-[var(--accent-green)] font-semibold'
+                  : 'text-[var(--text-secondary)] hover:bg-white/[0.04] hover:text-[var(--text-primary)]'
               )}
             >
               <Icon size={16} />
-              <span className="flex-1">{label}</span>
+              <span className="text-[var(--text-sm)] flex-1">{label}</span>
               {hasAlert && (
-                <span className="bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="bg-[var(--accent-red)] text-white text-[10px] font-bold h-[18px] min-w-[18px] rounded-full flex items-center justify-center px-1">
                   {unreadAlerts > 9 ? '9+' : unreadAlerts}
                 </span>
               )}
@@ -70,27 +71,28 @@ export function Sidebar({ orgName, userEmail, unreadAlerts = 0, onLogout }: Side
         })}
       </nav>
 
-      {/* Bottom: User + Org */}
-      <div className="border-t border-[#1E2D42] px-4 py-4">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-full bg-[#00C896]/20 flex items-center justify-center text-[#00C896] text-xs font-bold">
+      {/* Footer / User */}
+      <div className="p-[var(--space-4)] border-t border-[var(--border-subtle)] bg-black/10">
+        <div className="flex items-center gap-[var(--space-3)] mb-[var(--space-4)]">
+          <div className="w-8 h-8 rounded-full bg-[var(--accent-green-dim)] flex items-center justify-center text-[var(--accent-green)] text-[var(--text-sm)] font-bold border border-[var(--accent-green)]/20">
             {orgName ? orgName.charAt(0).toUpperCase() : 'F'}
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-[#E2E8F0] truncate">{orgName || 'Fleer Demo'}</p>
-            <p className="text-xs text-[#64748B] truncate">{userEmail || 'demo@fleer.ng'}</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-[var(--text-xs)] font-bold text-[var(--text-primary)] truncate">{orgName || 'Fleer Demo'}</p>
+            <p className="text-[10px] text-[var(--text-muted)] truncate">{userEmail || 'demo@fleer.ng'}</p>
           </div>
         </div>
-        <div className="flex gap-2">
-          <button className="flex-1 flex items-center justify-center gap-1.5 text-xs text-[#64748B] hover:text-[#E2E8F0] py-1.5 rounded-lg hover:bg-[#1A2235] transition-colors">
-            <Settings size={13} />
+        
+        <div className="flex gap-[var(--space-2)]">
+          <button className="flex-1 flex items-center justify-center gap-[var(--space-2)] h-[32px] text-[var(--text-xs)] font-medium text-[var(--text-secondary)] rounded-[var(--radius-md)] hover:bg-white/5 hover:text-[var(--text-primary)] transition-colors">
+            <Settings size={14} />
             Settings
           </button>
           <button
             onClick={onLogout}
-            className="flex items-center justify-center gap-1.5 text-xs text-[#64748B] hover:text-red-400 py-1.5 px-2 rounded-lg hover:bg-red-500/5 transition-colors"
+            className="w-[32px] h-[32px] flex items-center justify-center text-[var(--text-secondary)] rounded-[var(--radius-md)] hover:bg-[var(--accent-red)]/10 hover:text-[var(--accent-red)] transition-colors"
           >
-            <LogOut size={13} />
+            <LogOut size={14} />
           </button>
         </div>
       </div>

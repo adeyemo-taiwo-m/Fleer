@@ -15,9 +15,9 @@ interface FleetSummaryBarProps {
 export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-[var(--space-4)]">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="bg-[#1A2235] rounded-xl border border-[#1E2D42] h-24 animate-pulse" />
+          <div key={i} className="bg-[var(--bg-card)] rounded-[var(--radius-xl)] border border-[var(--border-subtle)] h-28 animate-pulse" />
         ))}
       </div>
     );
@@ -28,8 +28,8 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
     : 0;
 
   return (
-    <div className="grid grid-cols-5 gap-4 mb-6">
-      <Card className="p-4">
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-[var(--space-4)]">
+      <Card className="p-[var(--space-4)] hover:border-[var(--accent-green)]/30 transition-colors">
         <Stat
           label="Active Vehicles"
           value={summary.active_vehicles}
@@ -40,7 +40,7 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
         />
       </Card>
 
-      <Card className="p-4">
+      <Card className="p-[var(--space-4)]">
         <Stat
           label="Anomalies Today"
           value={summary.anomalies_today}
@@ -51,7 +51,7 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
         />
       </Card>
 
-      <Card className="p-4" accent>
+      <Card className="p-[var(--space-4)] border-l-2 border-l-[var(--accent-green)] bg-gradient-to-r from-[var(--accent-green-dim)]/20 to-transparent">
         <Stat
           label="Savings Today"
           value={formatNaira(summary.estimated_savings_today_naira)}
@@ -62,7 +62,7 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
         />
       </Card>
 
-      <Card className="p-4">
+      <Card className="p-[var(--space-4)]">
         <Stat
           label="Distance Today"
           value={formatKm(summary.total_distance_today_km)}
@@ -70,13 +70,13 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
         />
       </Card>
 
-      <Card className="p-4">
+      <Card className="p-[var(--space-4)]">
         <Stat
-          label="Fuel Used"
+          label="Fuel Consumption"
           value={formatLitres(summary.total_fuel_today_litres)}
           icon={<Fuel size={14} />}
           trend="neutral"
-          trendLabel="vs baseline"
+          trendLabel="Fleet total"
         />
       </Card>
     </div>
