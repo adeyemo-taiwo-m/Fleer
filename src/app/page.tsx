@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -22,7 +23,7 @@ export default function HomePage() {
           Start building something great.
         </p>
         <div className="hero-actions">
-          <a href="#" className="btn-primary">Get Started →</a>
+          <Link href="/login" className="btn-primary">Get Started →</Link>
           <a href="https://web.dev/progressive-web-apps/" target="_blank" rel="noopener noreferrer" className="btn-ghost">
             Learn about PWAs
           </a>

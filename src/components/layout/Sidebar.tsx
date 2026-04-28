@@ -10,7 +10,7 @@ import {
 import { clsx } from 'clsx';
 
 const navItems = [
-  { path: '/',          label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/map',       label: 'Live Map',  icon: Map },
   { path: '/vehicles',  label: 'Vehicles',  icon: Truck },
   { path: '/drivers',   label: 'Drivers',   icon: Users },
