@@ -96,7 +96,7 @@ export default function HomePage() {
             <div className="relative rounded-2xl border border-fleer-border bg-fleer-surface/50 p-2 overflow-hidden shadow-[0_32px_64px_rgba(0,0,0,0.6)] group">
               <div className="absolute inset-0 bg-gradient-to-tr from-fleer-accent/10 to-transparent pointer-events-none" />
               <Image 
-                src="/fleer_landing_hero_mockup_1777375420793.png" 
+                src="/fleer-hero.png" 
                 alt="Fleer Dashboard Mockup" 
                 width={800} 
                 height={600} 
