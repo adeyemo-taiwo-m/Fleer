@@ -25,10 +25,22 @@ export function useOrganization() {
           .select('*')
           .single()
           .then(({ data }) => {
-            setOrg(data);
+            if (data) setOrg(data);
             setIsLoading(false);
           });
       } else {
+        // FALLBACK FOR DEMO: If no session, provide demo credentials
+        // You can check a localStorage flag here if you want to make it explicit
+        const isDemo = localStorage.getItem('fleer_demo_mode') === 'true';
+        if (isDemo) {
+          setUser({ email: 'demo@fleer.ng', id: 'demo-user-id' });
+          setOrg({
+            id: 'demo-org-id',
+            name: 'Fleer Logistics Demo',
+            plan: 'enterprise',
+            created_at: new Date().toISOString()
+          });
+        }
         setIsLoading(false);
       }
     });
@@ -47,6 +59,7 @@ export function useOrganization() {
   }, []);
 
   const logout = async () => {
+    localStorage.removeItem('fleer_demo_mode');
     await supabase.auth.signOut();
   };
 

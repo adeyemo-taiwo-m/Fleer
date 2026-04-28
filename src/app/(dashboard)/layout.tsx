@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { useOrganization } from '@/hooks/useOrganization';
 import { useAlerts } from '@/hooks/useAlerts';
@@ -16,6 +16,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     await logout();
     router.push('/login');
   };
+
+  useEffect(() => {
+    if (!isLoading && !user && localStorage.getItem('fleer_demo_mode') !== 'true') {
+      router.push('/login');
+    }
+  }, [isLoading, user, router]);
 
   if (isLoading) {
     return (

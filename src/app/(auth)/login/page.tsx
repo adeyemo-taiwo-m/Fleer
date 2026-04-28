@@ -28,6 +28,11 @@ export default function LoginPage() {
     setLoading(false);
   };
 
+  const handleDemoAccess = () => {
+    localStorage.setItem('fleer_demo_mode', 'true');
+    router.push('/');
+  };
+
   return (
     <div className="min-h-screen bg-[#0A0E1A] flex items-center justify-center p-6 relative overflow-hidden">
       
@@ -97,6 +102,20 @@ export default function LoginPage() {
               loading={loading}
             >
               Sign In
+            </Button>
+
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#1E2D42]"></div></div>
+              <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-bold"><span className="bg-[#1A2235] px-4 text-[#334155]">Or</span></div>
+            </div>
+
+            <Button
+              type="button"
+              variant="secondary"
+              className="w-full py-3 text-sm border-[#00C896]/20 text-[#00C896] hover:bg-[#00C896]/5"
+              onClick={handleDemoAccess}
+            >
+              Explore Demo Mode
             </Button>
           </form>
         </div>
