@@ -21,45 +21,60 @@ function AlertRow({ alert, compact, onResolve }: {
 }) {
   return (
     <div className={clsx(
-      'flex items-start gap-3 border-b border-[#1E2D42] last:border-0 transition-colors',
+      'flex items-start gap-3 border-b border-fleer-border last:border-0 transition-colors',
       compact ? 'px-4 py-2.5' : 'px-5 py-4',
       alert.resolved && 'opacity-50',
-      !alert.resolved && alert.severity === 'critical' && 'bg-red-500/5'
+      !alert.resolved && alert.severity === 'critical' && 'bg-fleer-danger/5'
     )}>
       <span className="text-lg shrink-0 mt-0.5">{ANOMALY_ICONS[alert.type] || '⚠️'}</span>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-semibold text-sm text-[#E2E8F0]">{anomalyLabel[alert.type]}</span>
+          <span className="font-display font-semibold text-sm text-fleer-text tracking-tight">
+            {anomalyLabel[alert.type]}
+          </span>
           {!compact && <AlertBadge severity={alert.severity} />}
         </div>
-        <div className="flex items-center gap-2 mt-0.5">
-          <span className="font-mono text-xs text-[#64748B]">{alert.vehicle_plate}</span>
+        <div className="flex items-center gap-2 mt-1">
+          <span className="font-mono text-[11px] text-fleer-text-muted">{alert.vehicle_plate}</span>
+          <span className="text-fleer-text-dim">·</span>
           {alert.driver_name && (
-            <><span className="text-[#334155]">·</span><span className="text-xs text-[#64748B]">{alert.driver_name}</span></>
+            <>
+              <span className="font-display text-[11px] text-fleer-text-muted font-medium uppercase tracking-wider">{alert.driver_name}</span>
+              <span className="text-fleer-text-dim">·</span>
+            </>
           )}
-          <span className="text-[#334155]">·</span>
-          <span className="text-xs text-[#64748B]">{formatRelative(alert.timestamp)}</span>
+          <span className="font-display text-[11px] text-fleer-text-muted font-medium uppercase tracking-wider">
+            {formatRelative(alert.timestamp)}
+          </span>
         </div>
         {alert.description && !compact && (
-          <p className="text-xs text-[#64748B] mt-1 line-clamp-2">{alert.description}</p>
+          <p className="font-body text-xs text-fleer-text-muted mt-2 leading-relaxed line-clamp-2">
+            {alert.description}
+          </p>
         )}
       </div>
 
       <div className="shrink-0 text-right">
         {alert.naira_value && (
-          <span className="text-sm font-mono font-medium text-red-400">-{formatNaira(alert.naira_value)}</span>
+          <span className="text-sm font-mono font-bold text-fleer-danger tabular-nums">
+            -{formatNaira(alert.naira_value)}
+          </span>
         )}
         {!alert.resolved && onResolve && (
           <button
             onClick={() => onResolve(alert.id)}
-            className="block ml-auto mt-1 p-1 rounded text-[#64748B] hover:text-[#00C896] hover:bg-[#00C896]/10 transition-colors"
+            className="block ml-auto mt-2 p-1 rounded-md text-fleer-text-muted hover:text-fleer-accent hover:bg-fleer-accent/10 transition-all border border-transparent hover:border-fleer-accent/20"
             title="Mark as resolved"
           >
-            <Check size={13} />
+            <Check size={14} />
           </button>
         )}
-        {alert.resolved && <span className="block text-xs text-[#334155] mt-1">Resolved</span>}
+        {alert.resolved && (
+          <span className="block font-display text-[11px] font-bold text-fleer-text-dim uppercase tracking-widest mt-2">
+            Resolved
+          </span>
+        )}
       </div>
     </div>
   );
@@ -69,15 +84,17 @@ export function AlertsLog({ alerts, compact, onResolve }: AlertsLogProps) {
   if (alerts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center px-4">
-        <span className="text-3xl mb-2">✅</span>
-        <p className="text-sm font-medium text-[#E2E8F0]">No alerts</p>
-        <p className="text-xs text-[#64748B]">Fleet is running clean</p>
+        <div className="w-12 h-12 rounded-full bg-fleer-accent/10 flex items-center justify-center text-2xl mb-4 border border-fleer-accent/10">
+          ✅
+        </div>
+        <p className="font-display font-bold text-sm text-fleer-text uppercase tracking-widest">No Active Alerts</p>
+        <p className="font-display text-[11px] text-fleer-text-muted font-medium mt-1 uppercase tracking-wider">Fleet operations are optimized</p>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="animate-in fade-in duration-500">
       {alerts.map(alert => (
         <AlertRow key={alert.id} alert={alert} compact={compact} onResolve={onResolve} />
       ))}

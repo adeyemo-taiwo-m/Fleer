@@ -15,9 +15,9 @@ interface FleetSummaryBarProps {
 export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-[var(--space-4)]">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="bg-[var(--bg-card)] rounded-[var(--radius-xl)] border border-[var(--border-subtle)] h-28 animate-pulse" />
+          <div key={i} className="bg-fleer-card rounded-xl border border-fleer-border h-24 animate-pulse" />
         ))}
       </div>
     );
@@ -28,8 +28,8 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
     : 0;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-[var(--space-4)]">
-      <Card className="p-[var(--space-4)] hover:border-[var(--accent-green)]/30 transition-colors">
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <Card className="p-4">
         <Stat
           label="Active Vehicles"
           value={summary.active_vehicles}
@@ -40,7 +40,7 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
         />
       </Card>
 
-      <Card className="p-[var(--space-4)]">
+      <Card className="p-4">
         <Stat
           label="Anomalies Today"
           value={summary.anomalies_today}
@@ -51,18 +51,18 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
         />
       </Card>
 
-      <Card className="p-[var(--space-4)] border-l-2 border-l-[var(--accent-green)] bg-gradient-to-r from-[var(--accent-green-dim)]/20 to-transparent">
+      <Card className="p-4" accent>
         <Stat
           label="Savings Today"
           value={formatNaira(summary.estimated_savings_today_naira)}
           icon={<TrendingDown size={14} />}
           trend={summary.estimated_savings_today_naira > 0 ? 'up' : 'neutral'}
-          trendLabel={summary.estimated_savings_today_naira > 0 ? 'Leakage prevented' : 'Monitoring...'}
+          trendLabel={summary.estimated_savings_today_naira > 0 ? 'Revenue Saved' : 'Monitoring'}
           highlight
         />
       </Card>
 
-      <Card className="p-[var(--space-4)]">
+      <Card className="p-4">
         <Stat
           label="Distance Today"
           value={formatKm(summary.total_distance_today_km)}
@@ -70,13 +70,13 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
         />
       </Card>
 
-      <Card className="p-[var(--space-4)]">
+      <Card className="p-4">
         <Stat
           label="Fuel Consumption"
           value={formatLitres(summary.total_fuel_today_litres)}
           icon={<Fuel size={14} />}
           trend="neutral"
-          trendLabel="Fleet total"
+          trendLabel="vs fleet baseline"
         />
       </Card>
     </div>

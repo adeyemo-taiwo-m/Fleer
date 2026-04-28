@@ -29,20 +29,20 @@ export function Sidebar({ orgName, userEmail, unreadAlerts = 0, onLogout }: Side
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[220px] bg-[#111827] border-r border-[var(--border-subtle)] flex flex-col z-30">
+    <aside className="fixed left-0 top-0 h-screen w-60 bg-fleer-surface border-r border-fleer-border flex flex-col z-30">
       
       {/* Logo Area */}
-      <div className="h-[56px] flex items-center gap-[var(--space-3)] px-[var(--space-4)] border-b border-[var(--border-subtle)]">
-        <div className="w-8 h-8 rounded-lg bg-[var(--accent-green)] flex items-center justify-center shadow-[0_0_12px_rgba(0,229,160,0.25)]">
-          <Zap size={16} className="text-[#0d1117]" fill="currentColor" />
+      <div className="h-14 flex items-center gap-3 px-6 border-b border-fleer-border">
+        <div className="w-8 h-8 rounded-lg bg-fleer-accent flex items-center justify-center shadow-accent">
+          <Zap size={16} className="text-fleer-bg" fill="currentColor" />
         </div>
-        <span className="font-display font-extrabold text-[var(--text-xl)] text-[var(--text-primary)] tracking-tight">Fleer</span>
+        <span className="font-display font-bold text-base text-fleer-text tracking-tight uppercase">Fleer</span>
       </div>
 
       {/* Nav Section */}
-      <nav className="flex-1 px-[var(--space-3)] py-[var(--space-6)] flex flex-col gap-[var(--space-1)] overflow-y-auto">
-        <p className="px-[var(--space-3)] mb-[var(--space-2)] text-[var(--text-xs)] text-[var(--text-muted)] font-bold uppercase tracking-[0.08em]">
-          Menu
+      <nav className="flex-1 px-3 py-6 flex flex-col gap-1 overflow-y-auto">
+        <p className="px-3 mb-2 text-[11px] text-fleer-text-dim font-display font-medium uppercase tracking-wider">
+          Operations
         </p>
         {navItems.map(({ path, label, icon: Icon }) => {
           const isActive = pathname === path || (path !== '/dashboard' && pathname.startsWith(path));
@@ -53,16 +53,16 @@ export function Sidebar({ orgName, userEmail, unreadAlerts = 0, onLogout }: Side
               key={path}
               href={path}
               className={clsx(
-                'flex items-center gap-[var(--space-3)] px-[var(--space-3)] h-[36px] rounded-[var(--radius-md)] transition-all duration-200',
+                'flex items-center gap-3 px-3 py-2.5 rounded-lg font-display text-sm font-medium transition-all duration-150',
                 isActive
-                  ? 'bg-[var(--accent-green-dim)] text-[var(--accent-green)] font-semibold'
-                  : 'text-[var(--text-secondary)] hover:bg-white/[0.04] hover:text-[var(--text-primary)]'
+                  ? 'bg-fleer-accent/10 text-fleer-accent border-l-2 border-l-fleer-accent pl-[10px]'
+                  : 'text-fleer-text-muted hover:text-fleer-text hover:bg-fleer-card'
               )}
             >
-              <Icon size={16} />
-              <span className="text-[var(--text-sm)] flex-1">{label}</span>
+              <Icon size={16} className="shrink-0" />
+              <span className="flex-1">{label}</span>
               {hasAlert && (
-                <span className="bg-[var(--accent-red)] text-white text-[10px] font-bold h-[18px] min-w-[18px] rounded-full flex items-center justify-center px-1">
+                <span className="bg-fleer-danger text-white text-[10px] font-bold h-[18px] min-w-[18px] rounded-full flex items-center justify-center px-1">
                   {unreadAlerts > 9 ? '9+' : unreadAlerts}
                 </span>
               )}
@@ -71,26 +71,26 @@ export function Sidebar({ orgName, userEmail, unreadAlerts = 0, onLogout }: Side
         })}
       </nav>
 
-      {/* Footer / User */}
-      <div className="p-[var(--space-4)] border-t border-[var(--border-subtle)] bg-black/10">
-        <div className="flex items-center gap-[var(--space-3)] mb-[var(--space-4)]">
-          <div className="w-8 h-8 rounded-full bg-[var(--accent-green-dim)] flex items-center justify-center text-[var(--accent-green)] text-[var(--text-sm)] font-bold border border-[var(--accent-green)]/20">
+      {/* User Section */}
+      <div className="p-5 border-t border-fleer-border bg-fleer-bg/50">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full bg-fleer-accent/10 flex items-center justify-center text-fleer-accent text-sm font-bold font-display shrink-0 border border-fleer-accent/20">
             {orgName ? orgName.charAt(0).toUpperCase() : 'F'}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[var(--text-xs)] font-bold text-[var(--text-primary)] truncate">{orgName || 'Fleer Demo'}</p>
-            <p className="text-[10px] text-[var(--text-muted)] truncate">{userEmail || 'demo@fleer.ng'}</p>
+            <p className="text-sm font-display font-semibold text-fleer-text truncate">{orgName || 'Fleer Demo'}</p>
+            <p className="text-[11px] font-body text-fleer-text-muted truncate">{userEmail || 'demo@fleer.ng'}</p>
           </div>
         </div>
         
-        <div className="flex gap-[var(--space-2)]">
-          <button className="flex-1 flex items-center justify-center gap-[var(--space-2)] h-[32px] text-[var(--text-xs)] font-medium text-[var(--text-secondary)] rounded-[var(--radius-md)] hover:bg-white/5 hover:text-[var(--text-primary)] transition-colors">
+        <div className="flex gap-2">
+          <button className="flex-1 flex items-center justify-center gap-2 h-9 text-xs font-display font-medium text-fleer-text-muted rounded-lg border border-fleer-border hover:border-fleer-accent/50 hover:text-fleer-text transition-all">
             <Settings size={14} />
             Settings
           </button>
           <button
             onClick={onLogout}
-            className="w-[32px] h-[32px] flex items-center justify-center text-[var(--text-secondary)] rounded-[var(--radius-md)] hover:bg-[var(--accent-red)]/10 hover:text-[var(--accent-red)] transition-colors"
+            className="w-9 h-9 flex items-center justify-center text-fleer-text-muted rounded-lg border border-fleer-border hover:bg-fleer-danger/10 hover:text-fleer-danger hover:border-fleer-danger/20 transition-all"
           >
             <LogOut size={14} />
           </button>

@@ -5,12 +5,12 @@ import { VehicleStatus, AlertSeverity } from '../../types';
 type BadgeVariant = 'success' | 'warning' | 'danger' | 'info' | 'neutral' | 'purple';
 
 const variantStyles: Record<BadgeVariant, string> = {
-  success: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
-  warning: 'bg-amber-500/10 text-amber-400 border border-amber-500/20',
-  danger:  'bg-red-500/10 text-red-400 border border-red-500/20',
-  info:    'bg-blue-500/10 text-blue-400 border border-blue-500/20',
-  neutral: 'bg-slate-500/10 text-slate-400 border border-slate-500/20',
-  purple:  'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20',
+  success: 'bg-fleer-accent/10 text-fleer-accent border-fleer-accent/20',
+  warning: 'bg-fleer-warning/10 text-fleer-warning border-fleer-warning/20',
+  danger:  'bg-fleer-danger/10 text-fleer-danger border-fleer-danger/20',
+  info:    'bg-fleer-info/10 text-fleer-info border-fleer-info/20',
+  neutral: 'bg-fleer-text-dim/20 text-fleer-text-muted border-fleer-border',
+  purple:  'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
 };
 
 export const vehicleStatusVariant: Record<VehicleStatus, BadgeVariant> = {
@@ -37,18 +37,18 @@ interface BadgeProps {
 export function Badge({ label, variant, dot, className }: BadgeProps) {
   return (
     <span className={clsx(
-      'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium',
+      'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-display font-bold uppercase tracking-widest leading-none',
       variantStyles[variant],
       className
     )}>
       {dot && (
         <span className={clsx(
-          'w-1.5 h-1.5 rounded-full',
-          variant === 'success' && 'bg-emerald-400 animate-pulse',
-          variant === 'warning' && 'bg-amber-400',
-          variant === 'danger'  && 'bg-red-400',
-          variant === 'info'    && 'bg-blue-400',
-          variant === 'neutral' && 'bg-slate-400',
+          'w-1.5 h-1.5 rounded-full shrink-0',
+          variant === 'success' && 'bg-fleer-accent pulse-green',
+          variant === 'warning' && 'bg-fleer-warning',
+          variant === 'danger'  && 'bg-fleer-danger',
+          variant === 'info'    && 'bg-fleer-info',
+          variant === 'neutral' && 'bg-fleer-text-muted',
           variant === 'purple'  && 'bg-indigo-400',
         )} />
       )}

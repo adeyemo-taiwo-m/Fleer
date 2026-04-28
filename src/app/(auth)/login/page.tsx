@@ -34,102 +34,109 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-base)] flex items-center justify-center p-[var(--space-4)]">
-      <div className="max-w-[960px] w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-[var(--radius-xl)] shadow-[0_24px_64px_rgba(0,0,0,0.5)] overflow-hidden grid grid-cols-1 md:grid-cols-2">
+    <div className="min-h-screen bg-fleer-bg flex items-center justify-center p-4">
+      <div className="max-w-[960px] w-full bg-fleer-surface border border-fleer-border rounded-2xl shadow-[0_24px_64px_rgba(0,0,0,0.5)] overflow-hidden grid grid-cols-1 md:grid-cols-2">
         
-        {/* Left Panel */}
-        <div className="p-[var(--space-12)] bg-gradient-to-br from-[rgba(0,229,160,0.06)] to-transparent flex flex-col justify-between border-r border-[var(--border-subtle)]">
+        {/* Left Panel: Branding */}
+        <div className="p-12 bg-gradient-to-br from-fleer-accent/10 to-transparent flex flex-col justify-between border-r border-fleer-border">
           <div>
-            <div className="flex flex-row items-center gap-[var(--space-3)]">
-              <div className="w-8 h-8 rounded-lg bg-[var(--accent-green)] flex items-center justify-center text-[#0d1117] shadow-[0_0_12px_rgba(0,229,160,0.25)]">
-                <Zap size={16} fill="currentColor" />
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-fleer-accent flex items-center justify-center shadow-accent">
+                <Zap size={16} className="text-fleer-bg" fill="currentColor" />
               </div>
-              <span className="text-[var(--text-xl)] font-[800] text-[var(--text-primary)] tracking-tight">Fleer</span>
+              <span className="font-display font-bold text-base text-fleer-text tracking-tight uppercase">Fleer</span>
             </div>
 
-            <h1 className="text-[var(--text-4xl)] font-[800] leading-[1.1] text-[var(--text-primary)] mt-[var(--space-8)] tracking-tighter">
-              Welcome back to <br />
-              <span className="text-[var(--accent-green)]">Fleet Intelligence.</span>
+            <h1 className="font-display text-4xl font-bold leading-[1.1] text-fleer-text mt-12 tracking-tight">
+              Professional <br />
+              <span className="text-fleer-accent">Fleet Intelligence.</span>
             </h1>
 
-            <div className="mt-[var(--space-8)] flex flex-col gap-[var(--space-6)]">
+            <div className="mt-12 flex flex-col gap-8">
               {[
-                { icon: ShieldCheck, title: "Secure Access", desc: "Enterprise-grade protection for your logistics data." },
-                { icon: TrendingUp, title: "Live Tracking", desc: "Monitor your entire fleet's health from one screen." },
-                { icon: Lock, title: "Revenue Shield", desc: "Keeping your fuel and assets safe 24/7." }
+                { icon: ShieldCheck, title: "Operations Shield", desc: "Enterprise-grade protection for your logistics data." },
+                { icon: TrendingUp, title: "Performance Alpha", desc: "Monitor your entire fleet's health from one screen." },
+                { icon: Lock, title: "Revenue Integrity", desc: "Keeping your fuel and assets safe 24/7." }
               ].map((item, i) => (
-                <div key={i} className="flex flex-row gap-[var(--space-4)] items-start">
-                  <div className="w-[36px] h-[36px] bg-[var(--accent-green-dim)] text-[var(--accent-green)] rounded-full flex items-center justify-center shrink-0">
-                    <item.icon size={20} strokeWidth={2} />
+                <div key={i} className="flex gap-4 items-start">
+                  <div className="w-9 h-9 bg-fleer-accent/10 text-fleer-accent rounded-full flex items-center justify-center shrink-0 border border-fleer-accent/10">
+                    <item.icon size={18} strokeWidth={2.5} />
                   </div>
                   <div>
-                    <h4 className="text-[var(--text-sm)] font-semibold text-[var(--text-primary)]">{item.title}</h4>
-                    <p className="text-[var(--text-xs)] text-[var(--text-secondary)] mt-[2px]">{item.desc}</p>
+                    <h4 className="font-display text-sm font-bold text-fleer-text uppercase tracking-wider">{item.title}</h4>
+                    <p className="font-body text-xs text-fleer-text-muted mt-1 leading-relaxed">{item.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <p className="text-[var(--text-xs)] text-[var(--text-muted)] font-bold uppercase tracking-[0.08em] mt-[var(--space-8)]">
+          <p className="font-display text-[11px] text-fleer-text-dim font-bold uppercase tracking-[0.2em] mt-12">
             &copy; 2026 Fleer Intelligence
           </p>
         </div>
 
-        {/* Right Panel */}
-        <div className="p-[var(--space-12)] flex flex-col justify-center bg-[var(--bg-card)]/30">
-          <h2 className="text-[var(--text-2xl)] font-bold text-[var(--text-primary)] mb-[var(--space-2)]">Sign In</h2>
-          <p className="text-[var(--text-sm)] text-[var(--text-secondary)] mb-[var(--space-8)]">Access your enterprise dashboard</p>
+        {/* Right Panel: Form */}
+        <div className="p-12 flex flex-col justify-center bg-fleer-card/30">
+          <div className="max-w-[320px] w-full mx-auto">
+            <h2 className="font-display text-2xl font-bold text-fleer-text tracking-tight mb-2">Sign In</h2>
+            <p className="font-display text-xs text-fleer-text-muted font-medium uppercase tracking-widest mb-10">Access your enterprise dashboard</p>
 
-          {error && (
-            <div className="bg-[var(--accent-red)]/10 border border-[var(--accent-red)]/20 rounded-[var(--radius-md)] px-4 py-3 mb-6">
-              <p className="text-[var(--text-xs)] text-[var(--accent-red)] font-semibold text-center">{error}</p>
-            </div>
-          )}
+            {error && (
+              <div className="bg-fleer-danger/10 border border-fleer-danger/20 rounded-lg px-4 py-3 mb-6">
+                <p className="font-display text-[11px] text-fleer-danger font-bold text-center uppercase tracking-wider">{error}</p>
+              </div>
+            )}
 
-          <form onSubmit={handleLogin} className="space-y-[var(--space-5)]">
-            <div>
-              <label className="block text-[var(--text-xs)] font-bold text-[var(--text-secondary)] uppercase tracking-[0.06em] mb-[var(--space-2)]">Work Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                className="w-full h-[44px] bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[var(--radius-md)] px-[var(--space-4)] text-[var(--text-sm)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-green)] focus:ring-[3px] focus:ring-[var(--accent-green)]/15 transition-all"
-              />
-            </div>
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div>
+                <label className="block font-display text-[11px] font-bold text-fleer-text-muted uppercase tracking-[0.1em] mb-2">Work Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  className="w-full h-11 bg-fleer-surface border border-fleer-border rounded-lg px-4 font-display text-sm text-fleer-text placeholder:text-fleer-text-dim focus:outline-none focus:border-fleer-accent/60 focus:ring-2 focus:ring-fleer-accent/15 transition-all"
+                />
+              </div>
 
-            <div>
-              <label className="block text-[var(--text-xs)] font-bold text-[var(--text-secondary)] uppercase tracking-[0.06em] mb-[var(--space-2)]">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                className="w-full h-[44px] bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[var(--radius-md)] px-[var(--space-4)] text-[var(--text-sm)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-green)] focus:ring-[3px] focus:ring-[var(--accent-green)]/15 transition-all"
-              />
-            </div>
+              <div>
+                <label className="block font-display text-[11px] font-bold text-fleer-text-muted uppercase tracking-[0.1em] mb-2">Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  className="w-full h-11 bg-fleer-surface border border-fleer-border rounded-lg px-4 font-display text-sm text-fleer-text placeholder:text-fleer-text-dim focus:outline-none focus:border-fleer-accent/60 focus:ring-2 focus:ring-fleer-accent/15 transition-all"
+                />
+              </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-[48px] bg-[var(--accent-green)] text-[#0d1117] font-[700] text-[var(--text-sm)] rounded-[var(--radius-md)] border-none cursor-pointer transition-all duration-180 hover:bg-[#00c98a] hover:-translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Authenticating...' : 'Sign In to Dashboard'}
-            </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 bg-fleer-accent text-fleer-bg font-display font-bold text-sm rounded-lg shadow-accent hover:bg-fleer-accent/90 hover:-translate-y-[1px] active:translate-y-0 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed uppercase tracking-widest"
+              >
+                {loading ? 'Authenticating...' : 'Enter Dashboard'}
+              </button>
 
-            <button
-              type="button"
-              onClick={handleDemoAccess}
-              className="w-full h-[44px] mt-[var(--space-4)] flex items-center justify-center text-[var(--text-sm)] text-[var(--text-secondary)] border border-[var(--border-default)] rounded-[var(--radius-md)] hover:border-[var(--border-default)] hover:text-[var(--text-primary)] hover:bg-white/[0.03] transition-all duration-180"
-            >
-              Explore Demo Mode
-            </button>
-          </form>
+              <div className="relative my-8">
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-fleer-border"></div></div>
+                <div className="relative flex justify-center text-[10px] uppercase tracking-[0.3em] font-bold text-fleer-text-dim"><span className="bg-fleer-surface px-2">OR</span></div>
+              </div>
 
-          <p className="text-[var(--text-xs)] text-[var(--text-secondary)] text-center mt-[var(--space-8)]">
-            New here? <Link href="/signup" className="text-[var(--accent-green)] font-bold hover:underline">Create an organization account</Link>
-          </p>
+              <button
+                type="button"
+                onClick={handleDemoAccess}
+                className="w-full h-11 flex items-center justify-center font-display font-bold text-[11px] text-fleer-text-muted uppercase tracking-[0.15em] border border-fleer-border rounded-lg hover:border-fleer-accent/50 hover:text-fleer-text hover:bg-fleer-accent/5 transition-all duration-150"
+              >
+                Explore Demo Mode
+              </button>
+            </form>
+
+            <p className="font-display text-[11px] text-fleer-text-muted text-center mt-12 font-medium uppercase tracking-wider">
+              New here? <Link href="/signup" className="text-fleer-accent font-bold hover:underline">Create an organization account</Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

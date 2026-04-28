@@ -18,35 +18,42 @@ export function Stat({
   label, value, subValue, trend, trendLabel, trendInverse, icon, highlight, className,
 }: StatProps) {
   const trendColor = trend === 'neutral'
-    ? 'text-[var(--text-muted)]'
+    ? 'text-fleer-text-muted'
     : trendInverse
-      ? trend === 'up' ? 'text-[var(--accent-red)]' : 'text-[var(--accent-green)]'
-      : trend === 'up' ? 'text-[var(--accent-green)]' : 'text-[var(--accent-red)]';
+      ? trend === 'up' ? 'text-fleer-danger' : 'text-fleer-accent'
+      : trend === 'up' ? 'text-fleer-accent' : 'text-fleer-danger';
 
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
 
   return (
     <div className={clsx(
-      'flex flex-col gap-[var(--space-1)]',
+      'flex flex-col gap-1',
+      highlight && 'bg-fleer-accent/5 -m-4 p-4 border-l-2 border-l-fleer-accent',
       className
     )}>
-      <div className="flex items-center gap-[var(--space-2)]">
-        {icon && <span className="text-[var(--text-muted)]">{icon}</span>}
-        <span className="text-[var(--text-xs)] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+      <div className="flex items-center gap-2">
+        {icon && <span className="text-fleer-text-muted shrink-0">{icon}</span>}
+        <span className="text-[11px] font-display font-bold text-fleer-text-muted uppercase tracking-widest">
           {label}
         </span>
       </div>
-      <div className="flex items-baseline gap-[var(--space-2)]">
+      
+      <div className="flex items-baseline gap-2 mt-0.5">
         <span className={clsx(
-          'font-extrabold tabular-nums tracking-tighter transition-all duration-300',
-          highlight ? 'text-[var(--text-2xl)] text-[var(--accent-green)]' : 'text-[var(--text-xl)] text-[var(--text-primary)]'
+          'font-display font-bold tabular-nums tracking-tighter',
+          highlight ? 'text-3xl text-fleer-accent' : 'text-2xl text-fleer-text'
         )}>
           {value}
         </span>
-        {subValue && <span className="text-[var(--text-sm)] text-[var(--text-secondary)]">{subValue}</span>}
+        {subValue && (
+          <span className="text-xs font-display font-medium text-fleer-text-muted">
+            {subValue}
+          </span>
+        )}
       </div>
+
       {trend && trendLabel && (
-        <div className={clsx('flex items-center gap-[var(--space-1)] text-[var(--text-xs)] font-bold', trendColor)}>
+        <div className={clsx('flex items-center gap-1 text-[11px] font-display font-bold uppercase tracking-wider mt-1', trendColor)}>
           <TrendIcon size={12} />
           <span>{trendLabel}</span>
         </div>

@@ -14,7 +14,7 @@ export function AppShell({ children, unreadAlerts = 0 }: AppShellProps) {
   const { organization, user, logout } = useOrganization();
 
   return (
-    <div className="min-h-screen bg-[var(--bg-base)] flex selection:bg-[var(--accent-green)]/30">
+    <div className="min-h-screen bg-fleer-bg flex font-body">
       <Sidebar 
         orgName={organization?.name || ''} 
         userEmail={user?.email || ''} 
@@ -22,8 +22,8 @@ export function AppShell({ children, unreadAlerts = 0 }: AppShellProps) {
         onLogout={logout}
       />
       
-      <main className="flex-1 ml-[220px] min-h-screen flex flex-col">
-        <div className="w-full max-w-[1400px] mx-auto p-[var(--space-8)] flex-1">
+      <main className="flex-1 ml-60 min-h-screen flex flex-col mt-14">
+        <div className="w-full max-w-[1400px] mx-auto p-6 flex-1">
           {children}
         </div>
       </main>
@@ -32,11 +32,15 @@ export function AppShell({ children, unreadAlerts = 0 }: AppShellProps) {
         position="bottom-right"
         toastOptions={{
           style: {
-            background: 'var(--bg-surface)',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border-default)',
-            fontSize: 'var(--text-sm)',
-            borderRadius: 'var(--radius-md)',
+            background: '#1A2235',
+            color: '#E2E8F0',
+            border: '1px solid #1E2D42',
+            borderRadius: '12px',
+            fontFamily: 'DM Sans',
+            fontSize: '13px',
+          },
+          error: {
+            style: { borderLeft: '3px solid #EF4444' },
           },
         }}
       />
