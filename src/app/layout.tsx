@@ -4,11 +4,32 @@ import "./globals.css";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import PWAUpdatePrompt from "@/components/PWAUpdatePrompt";
 import InstallBanner from "@/components/InstallBanner";
+import { Toaster } from "react-hot-toast";
 
 // ── Fonts ─────────────────────────────────────────────────────────────────────
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -71,7 +92,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${dmSans.variable} ${jetbrainsMono.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col antialiased">
         {/* PWA plumbing — renders nothing visible */}
         <ServiceWorkerRegistration />
@@ -82,6 +103,24 @@ export default function RootLayout({
         {/* PWA prompts — float over content */}
         <PWAUpdatePrompt />
         <InstallBanner />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: '#1A2235',
+              color: '#E2E8F0',
+              border: '1px solid #1E2D42',
+              borderRadius: '12px',
+              fontFamily: 'var(--font-body)',
+              fontSize: '13px',
+            },
+            error: {
+              style: {
+                borderLeft: '3px solid #EF4444',
+              },
+            },
+          }}
+        />
       </body>
     </html>
   );
