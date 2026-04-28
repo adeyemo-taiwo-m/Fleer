@@ -18,14 +18,48 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
-    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
-    
-    if (authError) {
-      setError(authError.message);
-    } else {
+    // Detect if we are in a placeholder/unconfigured state
+    const isPlaceholder = supabase.auth.getSession === undefined || 
+                         process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ||
+                         !process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+    // Check for demo credentials first to bypass network errors entirely
+    const isDemoCreds = email === 'demo@smartsales.ai' || email === 'demo@fleer.ng';
+
+    if (isPlaceholder && isDemoCreds) {
+      console.log('Unconfigured Supabase detected, allowing demo login bypass');
+      localStorage.setItem('fleer_demo_mode', 'true');
       router.push('/dashboard');
+      setLoading(false);
+      return;
     }
-    setLoading(false);
+
+    try {
+      const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+      
+      if (authError) {
+        // Handle "Failed to fetch" returned by Supabase client as an error object
+        if (authError.message.includes('fetch') && isDemoCreds) {
+          localStorage.setItem('fleer_demo_mode', 'true');
+          router.push('/dashboard');
+          return;
+        }
+        setError(authError.message);
+      } else {
+        router.push('/dashboard');
+      }
+    } catch (err: any) {
+      console.warn('Supabase fetch failed:', err);
+      
+      if (isDemoCreds) {
+        localStorage.setItem('fleer_demo_mode', 'true');
+        router.push('/dashboard');
+      } else {
+        setError('Connection failed. Please check your internet or Supabase configuration.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDemoAccess = () => {

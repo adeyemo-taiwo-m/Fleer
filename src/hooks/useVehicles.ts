@@ -33,17 +33,24 @@ export function useVehicles() {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchVehicles = useCallback(async () => {
-    const { data, error } = await supabase.from('vehicles').select('*');
-    if (!error && data && data.length > 0) {
-      const vehicleData = data as Vehicle[];
-      setVehicles(vehicleData);
-      setSummary(computeSummary(vehicleData));
-    } else {
-      // Fallback to mock data for demo
+    try {
+      const { data, error } = await supabase.from('vehicles').select('*');
+      if (!error && data && data.length > 0) {
+        const vehicleData = data as Vehicle[];
+        setVehicles(vehicleData);
+        setSummary(computeSummary(vehicleData));
+      } else {
+        // Fallback to mock data for demo
+        setVehicles(MOCK_VEHICLES);
+        setSummary(computeSummary(MOCK_VEHICLES));
+      }
+    } catch (err) {
+      console.warn('Vehicles fetch failed, using mock data:', err);
       setVehicles(MOCK_VEHICLES);
       setSummary(computeSummary(MOCK_VEHICLES));
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -68,16 +75,21 @@ export function useVehicles() {
     });
 
     // Supabase real-time subscription for status changes
-    const channel = supabase
-      .channel('vehicles-changes')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'vehicles' }, payload => {
-        setVehicles(prev => prev.map(v => v.id === payload.new.id ? { ...v, ...payload.new } : v));
-      })
-      .subscribe();
+    let channel: any;
+    try {
+      channel = supabase
+        .channel('vehicles-changes')
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'vehicles' }, payload => {
+          setVehicles(prev => prev.map(v => v.id === payload.new.id ? { ...v, ...payload.new } : v));
+        })
+        .subscribe();
+    } catch (err) {
+      console.warn('Supabase real-time subscription failed:', err);
+    }
 
     return () => {
       socket.off('vehicle:position');
-      supabase.removeChannel(channel);
+      if (channel) supabase.removeChannel(channel);
     };
   }, [fetchVehicles]);
 

@@ -10,14 +10,20 @@ export function useDrivers() {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchDrivers = useCallback(async () => {
-    const { data, error } = await supabase.from('drivers').select('*');
-    if (!error && data && data.length > 0) {
-      setDrivers(data as Driver[]);
-    } else {
-      // Fallback to mock data
+    try {
+      const { data, error } = await supabase.from('drivers').select('*');
+      if (!error && data && data.length > 0) {
+        setDrivers(data as Driver[]);
+      } else {
+        // Fallback to mock data
+        setDrivers(MOCK_DRIVERS);
+      }
+    } catch (err) {
+      console.warn('Drivers fetch failed, using mock data:', err);
       setDrivers(MOCK_DRIVERS);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   useEffect(() => {

@@ -13,19 +13,25 @@ export function useAlerts() {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchAlerts = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('anomalies')
-      .select('*')
-      .order('timestamp', { ascending: false })
-      .limit(100);
-    
-    if (!error && data && data.length > 0) {
-      setAlerts(data as Anomaly[]);
-    } else {
-      // Fallback to mock data
+    try {
+      const { data, error } = await supabase
+        .from('anomalies')
+        .select('*')
+        .order('timestamp', { ascending: false })
+        .limit(100);
+      
+      if (!error && data && data.length > 0) {
+        setAlerts(data as Anomaly[]);
+      } else {
+        // Fallback to mock data
+        setAlerts(MOCK_ANOMALIES);
+      }
+    } catch (err) {
+      console.warn('Alerts fetch failed, using mock data:', err);
       setAlerts(MOCK_ANOMALIES);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   useEffect(() => {
