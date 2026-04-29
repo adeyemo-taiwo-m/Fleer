@@ -1490,8 +1490,6 @@ export function FleetMap({
 }
 ```
 
----
-
 ### 3.3 — Vehicle Detail Panel (Map Sidebar)
 
 **File:** `src/components/fleet/VehicleDetailPanel.tsx`
@@ -1707,8 +1705,6 @@ export function VehicleDetailPanel({
   );
 }
 ```
-
----
 
 ### 3.4 — Live Map Page
 

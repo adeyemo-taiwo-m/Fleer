@@ -34,9 +34,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // Note: We could redirect to /login here if !user, 
   // but let's keep it simple for now as per instructions.
 
-  return (
-    <AppShell unreadAlerts={unread}>
-      {children}
-    </AppShell>
-  );
+  return <>{children}</>;
 }
