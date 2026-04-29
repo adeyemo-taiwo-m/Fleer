@@ -31,29 +31,37 @@ export default function DashboardPage() {
         {/* KPI Bar */}
         <FleetSummaryBar summary={summary} isLoading={vehiclesLoading} />
 
-        {/* Map Preview */}
-        <Card className="overflow-hidden">
-          <CardHeader
-            title="Live Fleet View"
-            subtitle="Real-time vehicle telemetry"
-            action={
-              <button
-                onClick={() => router.push('/map')}
-                className="font-display text-[11px] font-bold text-fleer-accent hover:underline uppercase tracking-widest"
-              >
-                Full Map →
-              </button>
-            }
-          />
-          <div className="h-[380px] relative">
+        {/* Map Preview - Full Bleed inside Card */}
+        <Card className="overflow-hidden relative h-[500px]">
+          {/* Custom Header Overlay */}
+          <div className="absolute top-4 left-4 z-[401] pointer-events-none">
+            <h3 className="font-display font-bold text-fleer-text text-base leading-tight tracking-tight shadow-sm drop-shadow-md">
+              Live Fleet View
+            </h3>
+            <p className="font-display text-[10px] text-fleer-text-muted mt-0.5 font-bold uppercase tracking-widest drop-shadow-sm">
+              Real-time vehicle telemetry
+            </p>
+          </div>
+
+          <div className="absolute top-4 right-4 z-[401] flex items-center gap-3">
+             <div className="bg-fleer-surface/80 backdrop-blur-md border border-fleer-border rounded-lg px-3 py-1.5 flex items-center gap-2 shadow-lg">
+                <span className="w-1.5 h-1.5 rounded-full bg-fleer-accent pulse-green" />
+                <span className="font-display text-[10px] font-bold text-fleer-text uppercase tracking-widest">Live Tracking</span>
+             </div>
+             <button
+               onClick={() => router.push('/map')}
+               className="h-8 px-4 bg-fleer-surface/80 backdrop-blur-md border border-fleer-border rounded-lg font-display text-[10px] font-bold text-fleer-text hover:text-fleer-accent uppercase tracking-widest transition-all shadow-lg flex items-center"
+             >
+               Full Map →
+             </button>
+          </div>
+
+          <div className="w-full h-full">
             <FleetMap
               vehicles={vehicles}
               onVehicleClick={(v) => router.push(`/map?vehicle=${v.id}`)}
+              height="100%"
             />
-            <div className="absolute top-4 right-4 z-[400] bg-fleer-surface/80 backdrop-blur-md border border-fleer-border rounded-lg px-3 py-1.5 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-fleer-accent pulse-green" />
-              <span className="font-display text-[10px] font-bold text-fleer-text uppercase tracking-widest">Tracking Live</span>
-            </div>
           </div>
         </Card>
 
