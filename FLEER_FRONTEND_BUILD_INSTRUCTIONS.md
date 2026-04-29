@@ -1981,8 +1981,6 @@ export function DashboardPage() {
 }
 ```
 
----
-
 **✅ SECTION 4 CHECKPOINT**
 
 - [ ] Summary bar shows 5 stats with correct labels

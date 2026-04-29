@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Truck, AlertTriangle, TrendingDown, MapPin, Fuel } from 'lucide-react';
-import { FleetSummary } from '../../types';
-import { Stat } from '../ui/Stat';
-import { formatNaira, formatKm, formatLitres } from '../../lib/formatters';
-import { Card } from '../ui/Card';
+import React from "react";
+import { Truck, AlertTriangle, TrendingDown, MapPin, Fuel } from "lucide-react";
+import { FleetSummary } from "../../types";
+import { Stat } from "../ui/Stat";
+import { formatNaira, formatKm, formatLitres } from "../../lib/formatters";
+import { Card } from "../ui/Card";
 
 interface FleetSummaryBarProps {
   summary: FleetSummary;
@@ -15,27 +15,33 @@ interface FleetSummaryBarProps {
 export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-5 gap-4 mb-6">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="bg-fleer-card rounded-xl border border-fleer-border h-24 animate-pulse" />
+          <div
+            key={i}
+            className="bg-fleer-card rounded-xl border border-fleer-border h-24 animate-pulse"
+          />
         ))}
       </div>
     );
   }
 
-  const anomalyPercent = summary.total_vehicles > 0
-    ? Math.round((summary.vehicles_with_anomaly / summary.total_vehicles) * 100)
-    : 0;
+  const anomalyPercent =
+    summary.total_vehicles > 0
+      ? Math.round(
+          (summary.vehicles_with_anomaly / summary.total_vehicles) * 100,
+        )
+      : 0;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div className="grid grid-cols-5 gap-4 mb-6">
       <Card className="p-4">
         <Stat
           label="Active Vehicles"
           value={summary.active_vehicles}
           subValue={`/ ${summary.total_vehicles}`}
           icon={<Truck size={14} />}
-          trend={summary.active_vehicles > 0 ? 'up' : 'neutral'}
+          trend={summary.active_vehicles > 0 ? "up" : "neutral"}
           trendLabel={`${summary.vehicles_on_route} on route`}
         />
       </Card>
@@ -45,8 +51,12 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
           label="Anomalies Today"
           value={summary.anomalies_today}
           icon={<AlertTriangle size={14} />}
-          trend={summary.anomalies_today > 0 ? 'up' : 'neutral'}
-          trendLabel={summary.anomalies_today > 0 ? `${anomalyPercent}% of fleet` : 'All clear'}
+          trend={summary.anomalies_today > 0 ? "up" : "neutral"}
+          trendLabel={
+            summary.anomalies_today > 0
+              ? `${anomalyPercent}% of fleet`
+              : "All clear"
+          }
           trendInverse
         />
       </Card>
@@ -56,8 +66,12 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
           label="Savings Today"
           value={formatNaira(summary.estimated_savings_today_naira)}
           icon={<TrendingDown size={14} />}
-          trend={summary.estimated_savings_today_naira > 0 ? 'up' : 'neutral'}
-          trendLabel={summary.estimated_savings_today_naira > 0 ? 'Revenue Saved' : 'Monitoring'}
+          trend={summary.estimated_savings_today_naira > 0 ? "up" : "neutral"}
+          trendLabel={
+            summary.estimated_savings_today_naira > 0
+              ? "Leakage prevented"
+              : "Monitoring..."
+          }
           highlight
         />
       </Card>
@@ -72,11 +86,11 @@ export function FleetSummaryBar({ summary, isLoading }: FleetSummaryBarProps) {
 
       <Card className="p-4">
         <Stat
-          label="Fuel Consumption"
+          label="Fuel Used"
           value={formatLitres(summary.total_fuel_today_litres)}
           icon={<Fuel size={14} />}
           trend="neutral"
-          trendLabel="vs fleet baseline"
+          trendLabel="vs baseline"
         />
       </Card>
     </div>
