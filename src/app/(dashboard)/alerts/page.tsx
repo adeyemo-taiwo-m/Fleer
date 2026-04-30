@@ -3,10 +3,11 @@
 import React, { useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { AlertsLog } from "@/components/alerts/AlertsLog";
-import { Card, CardHeader } from "@/components/ui/Card";
+import { Card, CardHeader, CardBody } from "@/components/ui/Card";
 import { useAlerts } from "@/hooks/useAlerts";
 import { useOrganization } from "@/hooks/useOrganization";
 import { AlertSeverity } from "@/types";
+import { AlertRowSkeleton } from "@/components/ui/Skeleton";
 
 type FilterTab = "all" | "unresolved" | AlertSeverity;
 
@@ -19,7 +20,7 @@ const tabs: { value: FilterTab; label: string }[] = [
 ];
 
 export default function AlertsPage() {
-  const { alerts, unread, resolveAlert } = useAlerts();
+  const { alerts, unread, isLoading, resolveAlert } = useAlerts();
   const { org, user, logout } = useOrganization();
   const [activeTab, setActiveTab] = useState<FilterTab>("unresolved");
 
@@ -60,11 +61,21 @@ export default function AlertsPage() {
       <Card>
         <CardHeader
           title="Anomaly Alerts"
-          subtitle={`${filtered.length} ${
+          subtitle={isLoading ? "Syncing with fleet telemetry..." : `${filtered.length} ${
             activeTab === "unresolved" ? "unresolved" : "total"
           }`}
         />
-        <AlertsLog alerts={filtered} onResolve={resolveAlert} />
+        <CardBody className="p-0">
+          {isLoading ? (
+            <div className="divide-y divide-fleer-border">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <AlertRowSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <AlertsLog alerts={filtered} onResolve={resolveAlert} />
+          )}
+        </CardBody>
       </Card>
     </AppShell>
   );
