@@ -11,6 +11,10 @@ import { useOrganization } from "@/hooks/useOrganization";
 import { Download, TrendingDown, Fuel, AlertTriangle } from "lucide-react";
 import { formatNaira } from "@/lib/formatters";
 
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import toast from "react-hot-toast";
+
 // MOCK DATA — replace with real Supabase query
 const mockChartData = Array.from({ length: 14 }, (_, i) => ({
   date: new Date(Date.now() - (13 - i) * 86400000).toISOString().split("T")[0],
@@ -60,9 +64,37 @@ export default function ReportsPage() {
   );
 
   const handleDownloadPDF = async () => {
+    const element = document.getElementById("report-content");
+    if (!element) return;
+
     setDownloading(true);
-    // TODO: Call backend endpoint to generate Puppeteer PDF
-    setTimeout(() => setDownloading(false), 2000);
+    const toastId = toast.loading("Generating your financial report...");
+
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        backgroundColor: "#0f0f13",
+        logging: false,
+        useCORS: true,
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "px",
+        format: [canvas.width / 2, canvas.height / 2],
+      });
+
+      pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
+      pdf.save(`Fleer-Financial-Report-${new Date().toISOString().split("T")[0]}.pdf`);
+      
+      toast.success("Report downloaded successfully!", { id: toastId });
+    } catch (error) {
+      console.error("PDF Generation failed:", error);
+      toast.error("Failed to generate report. Please try again.", { id: toastId });
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -85,58 +117,60 @@ export default function ReportsPage() {
         </Button>
       }
     >
-      {/* Top Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <Card className="p-5" accent>
-          <Stat
-            label="Total Savings (14 days)"
-            value={formatNaira(totalSavings)}
-            icon={<TrendingDown size={14} />}
-            trend="up"
-            trendLabel="Leakage prevented"
-            highlight
+      <div id="report-content" className="p-1">
+        {/* Top Stats */}
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <Card className="p-5" accent>
+            <Stat
+              label="Total Savings (14 days)"
+              value={formatNaira(totalSavings)}
+              icon={<TrendingDown size={14} />}
+              trend="up"
+              trendLabel="Leakage prevented"
+              highlight
+            />
+          </Card>
+          <Card className="p-5">
+            <Stat
+              label="Unaccounted Fuel Value"
+              value={formatNaira(Math.abs(totalVarianceNaira))}
+              icon={<Fuel size={14} />}
+              trend="down"
+              trendLabel="Fuel variance this period"
+              trendInverse
+            />
+          </Card>
+          <Card className="p-5">
+            <Stat
+              label="Anomalies Detected"
+              value={mockReconciliation.reduce((s, r) => s + r.anomaly_count, 0)}
+              icon={<AlertTriangle size={14} />}
+              trend="neutral"
+              trendLabel="This period"
+            />
+          </Card>
+        </div>
+
+        {/* Savings Trend Chart */}
+        <Card className="mb-6">
+          <CardHeader
+            title="Savings Trend"
+            subtitle="Daily estimated savings from anomaly detection"
           />
+          <CardBody>
+            <SavingsChart data={mockChartData} />
+          </CardBody>
         </Card>
-        <Card className="p-5">
-          <Stat
-            label="Unaccounted Fuel Value"
-            value={formatNaira(Math.abs(totalVarianceNaira))}
-            icon={<Fuel size={14} />}
-            trend="down"
-            trendLabel="Fuel variance this period"
-            trendInverse
+
+        {/* Fuel Reconciliation Table */}
+        <Card>
+          <CardHeader
+            title="Fuel Reconciliation"
+            subtitle="Fuel bought vs actual consumption — variance is your exposure"
           />
-        </Card>
-        <Card className="p-5">
-          <Stat
-            label="Anomalies Detected"
-            value={mockReconciliation.reduce((s, r) => s + r.anomaly_count, 0)}
-            icon={<AlertTriangle size={14} />}
-            trend="neutral"
-            trendLabel="This period"
-          />
+          <FuelReconciliation rows={mockReconciliation} period="Last 14 Days" />
         </Card>
       </div>
-
-      {/* Savings Trend Chart */}
-      <Card className="mb-6">
-        <CardHeader
-          title="Savings Trend"
-          subtitle="Daily estimated savings from anomaly detection"
-        />
-        <CardBody>
-          <SavingsChart data={mockChartData} />
-        </CardBody>
-      </Card>
-
-      {/* Fuel Reconciliation Table */}
-      <Card>
-        <CardHeader
-          title="Fuel Reconciliation"
-          subtitle="Fuel bought vs actual consumption — variance is your exposure"
-        />
-        <FuelReconciliation rows={mockReconciliation} period="Last 14 Days" />
-      </Card>
     </AppShell>
   );
 }
