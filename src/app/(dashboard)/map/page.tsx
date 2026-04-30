@@ -2,7 +2,19 @@
 
 import React, { useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
-import { FleetMap } from "@/components/map/FleetMap";
+import dynamic from "next/dynamic";
+
+const FleetMap = dynamic(() => import("@/components/map/FleetMap").then(mod => mod.FleetMap), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full bg-fleer-card animate-pulse rounded-xl border border-fleer-border flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-8 h-8 border-4 border-fleer-accent border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-xs font-display font-bold text-fleer-text-dim uppercase tracking-[0.2em]">Booting Live Telemetry...</p>
+      </div>
+    </div>
+  )
+});
 import { VehicleDetailPanel } from "@/components/fleet/VehicleDetailPanel";
 import { Vehicle } from "@/types";
 import { useVehicles } from "@/hooks/useVehicles";

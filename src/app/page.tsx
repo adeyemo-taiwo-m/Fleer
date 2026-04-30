@@ -3,7 +3,7 @@
 import React from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { FleetSummaryBar } from "@/components/fleet/FleetSummaryBar";
-import { FleetMap } from "@/components/map/FleetMap";
+import dynamic from "next/dynamic";
 import { AlertsLog } from "@/components/alerts/AlertsLog";
 import { DriverLeaderboard } from "@/components/drivers/DriverLeaderboard";
 import { Card, CardHeader, CardBody } from "@/components/ui/Card";
@@ -14,6 +14,15 @@ import { useOrganization } from "@/hooks/useOrganization";
 import { Button } from "@/components/ui/Button";
 import { RefreshCw } from "lucide-react";
 import { AlertRowSkeleton, Skeleton } from "@/components/ui/Skeleton";
+
+const FleetMap = dynamic(() => import("@/components/map/FleetMap").then(mod => mod.FleetMap), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[380px] bg-fleer-card animate-pulse rounded-xl border border-fleer-border flex items-center justify-center">
+      <p className="text-xs font-display font-bold text-fleer-text-dim uppercase tracking-widest">Initializing Map Engine...</p>
+    </div>
+  )
+});
 
 export default function DashboardPage() {
   const {

@@ -8,7 +8,10 @@ import { useEffect } from "react";
  */
 export default function ServiceWorkerRegistration() {
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
+    if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
+
+    // Small delay to ensure the page has settled, especially during dev reloads
+    const timer = setTimeout(() => {
       navigator.serviceWorker
         .register("/sw.js", { scope: "/" })
         .then((reg) => {
@@ -18,10 +21,22 @@ export default function ServiceWorkerRegistration() {
           const interval = setInterval(() => reg.update(), 60_000);
           return () => clearInterval(interval);
         })
-        .catch((err) =>
-          console.error("[SW] Registration failed:", err)
-        );
-    }
+        .catch((err) => {
+          console.error("[SW] Registration failed:", err);
+          
+          // If we are in an invalid state, try to unregister and recover
+          if (err.message.includes("invalid state") || err.name === "InvalidStateError") {
+            console.warn("[SW] Attempting recovery from invalid state...");
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+              for (const registration of registrations) {
+                registration.unregister();
+              }
+            });
+          }
+        });
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return null; // Renders nothing — side-effects only
