@@ -48,25 +48,30 @@ export function VehicleDetailPanel({
   const statusColor = VEHICLE_STATUS_COLORS[vehicle.status];
 
   return (
-    <div className="absolute top-4 right-4 bottom-4 w-80 z-[500] bg-fleer-card/95 backdrop-blur-md border border-fleer-border rounded-xl shadow-card flex flex-col overflow-hidden slide-in">
+    <div className="absolute top-4 right-4 bottom-4 w-80 z-[1100] bg-fleer-card/95 backdrop-blur-md border border-fleer-border rounded-xl shadow-2xl flex flex-col overflow-hidden slide-in">
       {/* Panel Header */}
-      <div className="flex items-start justify-between px-4 py-4 border-b border-fleer-border">
-        <div>
-          <h3 className="font-display font-bold text-fleer-text text-base">
+      <div className="relative px-5 py-5 border-b border-fleer-border">
+        <div className="pr-8">
+          <h3 className="font-display font-bold text-fleer-text text-lg tracking-tight">
             {vehicle.plate}
           </h3>
-          <Badge
-            label={VEHICLE_STATUS_LABELS[vehicle.status]}
-            variant={vehicleStatusVariant[vehicle.status]}
-            dot
-            className="mt-1"
-          />
+          <div className="flex items-center gap-2 mt-1.5">
+            <Badge
+              label={VEHICLE_STATUS_LABELS[vehicle.status]}
+              variant={vehicleStatusVariant[vehicle.status]}
+              dot
+            />
+            <span className="text-[10px] font-display font-bold text-fleer-text-dim uppercase tracking-widest">
+              {vehicle.type}
+            </span>
+          </div>
         </div>
         <button
           onClick={onClose}
-          className="text-fleer-text-muted hover:text-fleer-text p-1 rounded-lg hover:bg-fleer-surface transition-colors"
+          className="absolute top-4 right-4 text-fleer-text-muted hover:text-fleer-text p-2 rounded-full hover:bg-fleer-surface border border-transparent hover:border-fleer-border transition-all shadow-sm"
+          title="Close Panel"
         >
-          <X size={16} />
+          <X size={18} />
         </button>
       </div>
 

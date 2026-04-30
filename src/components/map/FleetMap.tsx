@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { MapContainer, TileLayer, ZoomControl, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, ZoomControl, useMap, useMapEvents } from "react-leaflet";
 import { useEffect } from "react";
 import "leaflet/dist/leaflet.css";
 import { VehicleMarker } from "./VehicleMarker";
@@ -27,9 +27,19 @@ function MapController({ center, zoom }: { center?: [number, number]; zoom?: num
   return null;
 }
 
+function MapEvents({ onClick }: { onClick: () => void }) {
+  useMapEvents({
+    click: () => {
+      onClick();
+    },
+  });
+  return null;
+}
+
 interface FleetMapProps {
   vehicles: Vehicle[];
   onVehicleClick: (vehicle: Vehicle) => void;
+  onMapClick?: () => void;
   height?: string;
   center?: [number, number];
   zoom?: number;
@@ -49,6 +59,7 @@ const filterOptions: { value: FilterStatus; label: string }[] = [
 export function FleetMap({
   vehicles,
   onVehicleClick,
+  onMapClick,
   height = "100%",
   center,
   zoom,
@@ -88,6 +99,7 @@ export function FleetMap({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
         <MapController center={center} zoom={zoom} />
+        {onMapClick && <MapEvents onClick={onMapClick} />}
         <ZoomControl position="bottomright" />
         {filteredVehicles.map((vehicle) => (
           <VehicleMarker

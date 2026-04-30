@@ -53,6 +53,7 @@ export default function LiveMapPage() {
         <FleetMap
           vehicles={vehicles}
           onVehicleClick={handleVehicleClick}
+          onMapClick={() => setSelectedVehicle(null)}
           height="100%"
           center={mapCenter}
           zoom={mapZoom}
