@@ -10,7 +10,7 @@ import {
 import { clsx } from 'clsx';
 
 const navItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/',          label: 'Dashboard', icon: LayoutDashboard },
   { path: '/map',       label: 'Live Map',  icon: Map },
   { path: '/vehicles',  label: 'Vehicles',  icon: Truck },
   { path: '/drivers',   label: 'Drivers',   icon: Users },
@@ -45,7 +45,7 @@ export function Sidebar({ orgName, userEmail, unreadAlerts = 0, onLogout }: Side
           Operations
         </p>
         {navItems.map(({ path, label, icon: Icon }) => {
-          const isActive = pathname === path || (path !== '/dashboard' && pathname.startsWith(path));
+          const isActive = pathname === path || (path !== '/' && pathname.startsWith(path));
           const hasAlert = label === 'Alerts' && unreadAlerts > 0;
           
           return (

@@ -29,7 +29,7 @@ export default function LoginPage() {
     if (isPlaceholder && isDemoCreds) {
       console.log('Unconfigured Supabase detected, allowing demo login bypass');
       localStorage.setItem('fleer_demo_mode', 'true');
-      router.push('/dashboard');
+      router.push('/');
       setLoading(false);
       return;
     }
@@ -41,19 +41,19 @@ export default function LoginPage() {
         // Handle "Failed to fetch" returned by Supabase client as an error object
         if (authError.message.includes('fetch') && isDemoCreds) {
           localStorage.setItem('fleer_demo_mode', 'true');
-          router.push('/dashboard');
+          router.push('/');
           return;
         }
         setError(authError.message);
       } else {
-        router.push('/dashboard');
+        router.push('/');
       }
     } catch (err: any) {
       console.warn('Supabase fetch failed:', err);
       
       if (isDemoCreds) {
         localStorage.setItem('fleer_demo_mode', 'true');
-        router.push('/dashboard');
+        router.push('/');
       } else {
         setError('Connection failed. Please check your internet or Supabase configuration.');
       }
@@ -64,7 +64,7 @@ export default function LoginPage() {
 
   const handleDemoAccess = () => {
     localStorage.setItem('fleer_demo_mode', 'true');
-    router.push('/dashboard');
+    router.push('/');
   };
 
   return (
