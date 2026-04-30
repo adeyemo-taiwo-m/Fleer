@@ -76,8 +76,30 @@ export function FleetMap({
       className="relative w-full rounded-xl overflow-hidden border border-fleer-border"
       style={{ height }}
     >
+      {/* Leaflet Map */}
+      <MapContainer
+        center={LAGOS_CENTER}
+        zoom={LAGOS_ZOOM}
+        style={{ width: "100%", height: "100%" }}
+        zoomControl={false}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        />
+        <MapController center={center} zoom={zoom} />
+        <ZoomControl position="bottomright" />
+        {filteredVehicles.map((vehicle) => (
+          <VehicleMarker
+            key={vehicle.id}
+            vehicle={vehicle}
+            onClick={onVehicleClick}
+          />
+        ))}
+      </MapContainer>
+
       {/* Filter Bar (overlaid on map) */}
-      <div className="absolute top-4 left-4 z-[400] flex items-center gap-1.5 bg-fleer-card/90 backdrop-blur-sm border border-fleer-border rounded-lg p-1">
+      <div className="absolute top-4 left-4 z-[1001] flex items-center gap-1.5 bg-fleer-card/90 backdrop-blur-sm border border-fleer-border rounded-lg p-1">
         {filterOptions.map((opt) => (
           <button
             key={opt.value}
@@ -105,7 +127,7 @@ export function FleetMap({
       </div>
 
       {/* Vehicle List Overlay */}
-      <div className={`absolute top-16 left-4 z-[400] w-72 max-h-[calc(100%-120px)] bg-fleer-card/95 backdrop-blur-md border border-fleer-border rounded-xl shadow-2xl transition-all duration-300 flex flex-col ${showList ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
+      <div className={`absolute top-16 left-4 z-[1001] w-72 max-h-[calc(100%-120px)] bg-fleer-card/95 backdrop-blur-md border border-fleer-border rounded-xl shadow-2xl transition-all duration-300 flex flex-col ${showList ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
         <div className="p-3 border-b border-fleer-border">
           <div className="relative">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-fleer-text-dim" />
@@ -145,7 +167,7 @@ export function FleetMap({
       {/* Toggle List Button */}
       <button 
         onClick={() => setShowList(!showList)}
-        className={`absolute bottom-4 left-4 z-[400] h-10 px-4 rounded-xl font-display font-bold text-xs uppercase tracking-widest shadow-xl flex items-center gap-2 transition-all ${
+        className={`absolute bottom-4 left-4 z-[1001] h-10 px-4 rounded-xl font-display font-bold text-xs uppercase tracking-widest shadow-xl flex items-center gap-2 transition-all ${
           showList ? 'bg-fleer-bg border border-fleer-border text-fleer-text' : 'bg-fleer-accent text-fleer-bg shadow-accent'
         }`}
       >
@@ -154,7 +176,7 @@ export function FleetMap({
       </button>
 
       {/* Vehicle Count (overlaid) */}
-      <div className="absolute top-4 right-4 z-[400] bg-fleer-card/90 backdrop-blur-sm border border-fleer-border rounded-lg px-3 py-2 text-right">
+      <div className="absolute top-4 right-4 z-[1001] bg-fleer-card/90 backdrop-blur-sm border border-fleer-border rounded-lg px-3 py-2 text-right">
         <p className="text-xs text-fleer-text-muted font-display">Active Fleet</p>
         <div className="flex items-center gap-2 justify-end">
           <span className="text-lg font-display font-bold text-fleer-text tabular-nums">
@@ -163,28 +185,6 @@ export function FleetMap({
           <span className="text-[10px] text-fleer-text-dim font-bold uppercase tracking-wider">Assets</span>
         </div>
       </div>
-
-      {/* Leaflet Map */}
-      <MapContainer
-        center={LAGOS_CENTER}
-        zoom={LAGOS_ZOOM}
-        style={{ width: "100%", height: "100%" }}
-        zoomControl={false}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        />
-        <MapController center={center} zoom={zoom} />
-        <ZoomControl position="bottomright" />
-        {filteredVehicles.map((vehicle) => (
-          <VehicleMarker
-            key={vehicle.id}
-            vehicle={vehicle}
-            onClick={onVehicleClick}
-          />
-        ))}
-      </MapContainer>
     </div>
   );
 }
