@@ -16,9 +16,17 @@ export default function LiveMapPage() {
   const { alerts } = useAlerts();
   const { drivers } = useDrivers();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [mapCenter, setMapCenter] = useState<[number, number] | undefined>(undefined);
+  const [mapZoom, setMapZoom] = useState<number | undefined>(undefined);
 
   const handleVehicleClick = (vehicle: Vehicle) => {
-    setSelectedVehicle((prev) => (prev?.id === vehicle.id ? null : vehicle));
+    const isSame = selectedVehicle?.id === vehicle.id;
+    setSelectedVehicle(isSame ? null : vehicle);
+    
+    if (vehicle.current_lat && vehicle.current_lng) {
+      setMapCenter([vehicle.current_lat, vehicle.current_lng]);
+      setMapZoom(16); // Close zoom for specific vehicle
+    }
   };
 
   const selectedDriver = selectedVehicle?.current_driver_id
@@ -46,6 +54,8 @@ export default function LiveMapPage() {
           vehicles={vehicles}
           onVehicleClick={handleVehicleClick}
           height="100%"
+          center={mapCenter}
+          zoom={mapZoom}
         />
         <VehicleDetailPanel
           vehicle={selectedVehicle}

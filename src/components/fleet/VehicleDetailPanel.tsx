@@ -14,6 +14,7 @@ import {
   formatNaira,
   anomalyLabel,
 } from "../../lib/formatters";
+import { useRouter } from "next/navigation";
 import { clsx } from "clsx";
 
 interface VehicleDetailPanelProps {
@@ -41,6 +42,7 @@ export function VehicleDetailPanel({
   recentAnomalies = [],
   onClose,
 }: VehicleDetailPanelProps) {
+  const router = useRouter();
   if (!vehicle) return null;
 
   const statusColor = VEHICLE_STATUS_COLORS[vehicle.status];
@@ -198,7 +200,10 @@ export function VehicleDetailPanel({
 
       {/* View Full Details */}
       <div className="p-4 border-t border-fleer-border">
-        <button className="w-full bg-fleer-accent/10 text-fleer-accent hover:bg-fleer-accent/20 text-sm font-display font-medium py-2 rounded-lg transition-colors">
+        <button 
+          onClick={() => router.push(`/vehicles/${vehicle.id}`)}
+          className="w-full bg-fleer-accent/10 text-fleer-accent hover:bg-fleer-accent/20 text-sm font-display font-medium py-2 rounded-lg transition-colors"
+        >
           View Full Details →
         </button>
       </div>
