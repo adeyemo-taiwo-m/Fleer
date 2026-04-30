@@ -65,33 +65,47 @@ export default function ReportsPage() {
 
   const handleDownloadPDF = async () => {
     const element = document.getElementById("report-content");
-    if (!element) return;
+    if (!element) {
+      toast.error("Report content not found.");
+      return;
+    }
 
     setDownloading(true);
-    const toastId = toast.loading("Generating your financial report...");
+    const tid = toast.loading("Generating PDF... Please stay on this page.");
 
     try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        backgroundColor: "#0f0f13",
-        logging: false,
+      // 1. Race html2canvas against a timeout to prevent hanging
+      const capturePromise = html2canvas(element, {
+        scale: 1.5,
         useCORS: true,
+        logging: true,
+        backgroundColor: "#0f0f13",
       });
 
-      const imgData = canvas.toDataURL("image/png");
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Capture timed out")), 10000)
+      );
+
+      const canvas = await (Promise.race([capturePromise, timeoutPromise]) as Promise<HTMLCanvasElement>);
+
+      // 2. Convert to PDF
+      const imgData = canvas.toDataURL("image/jpeg", 0.7);
       const pdf = new jsPDF({
-        orientation: "portrait",
+        orientation: element.offsetWidth > element.offsetHeight ? "l" : "p",
         unit: "px",
-        format: [canvas.width / 2, canvas.height / 2],
+        format: [canvas.width, canvas.height]
       });
 
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
-      pdf.save(`Fleer-Financial-Report-${new Date().toISOString().split("T")[0]}.pdf`);
+      pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
+      pdf.save(`Fleer-Report-${Date.now()}.pdf`);
       
-      toast.success("Report downloaded successfully!", { id: toastId });
-    } catch (error) {
-      console.error("PDF Generation failed:", error);
-      toast.error("Failed to generate report. Please try again.", { id: toastId });
+      toast.success("Success! Your report has been downloaded.", { id: tid });
+    } catch (err: any) {
+      console.error("[PDF Error]:", err);
+      toast.error("High-quality generation failed or timed out. Opening print dialog...", { id: tid });
+      
+      // FALLBACK: Immediate print dialog if library fails or times out
+      setTimeout(() => window.print(), 500);
     } finally {
       setDownloading(false);
     }

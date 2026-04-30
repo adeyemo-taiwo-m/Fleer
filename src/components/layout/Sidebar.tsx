@@ -84,10 +84,13 @@ export function Sidebar({ orgName, userEmail, unreadAlerts = 0, onLogout }: Side
         </div>
         
         <div className="flex gap-2">
-          <button className="flex-1 flex items-center justify-center gap-2 h-9 text-xs font-display font-medium text-fleer-text-muted rounded-lg border border-fleer-border hover:border-fleer-accent/50 hover:text-fleer-text transition-all">
+          <Link 
+            href="/settings"
+            className="flex-1 flex items-center justify-center gap-2 h-9 text-xs font-display font-medium text-fleer-text-muted rounded-lg border border-fleer-border hover:border-fleer-accent/50 hover:text-fleer-text transition-all"
+          >
             <Settings size={14} />
             Settings
-          </button>
+          </Link>
           <button
             onClick={onLogout}
             className="w-9 h-9 flex items-center justify-center text-fleer-text-muted rounded-lg border border-fleer-border hover:bg-fleer-danger/10 hover:text-fleer-danger hover:border-fleer-danger/20 transition-all"
