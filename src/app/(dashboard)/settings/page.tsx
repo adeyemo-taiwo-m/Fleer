@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Card, CardHeader, CardBody } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useOrganization } from "@/hooks/useOrganization";
 import { 
   User, Building, Bell, Shield, CreditCard, 
-  Save, Mail, Phone, MapPin, Globe, Check
+  Save, Mail, Phone, MapPin, Globe, Check, Upload
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -17,6 +17,8 @@ export default function SettingsPage() {
   const { org, user, logout } = useOrganization();
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
   const [isSaving, setIsSaving] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSave = () => {
     setIsSaving(true);
@@ -24,6 +26,19 @@ export default function SettingsPage() {
       setIsSaving(false);
       toast.success("Settings saved successfully!");
     }, 1500);
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("Image size too large. Max 2MB.");
+        return;
+      }
+      const url = URL.createObjectURL(file);
+      setAvatarUrl(url);
+      toast.success("Avatar preview updated!");
+    }
   };
 
   const tabs: { id: SettingsTab; label: string; icon: React.ElementType }[] = [
@@ -86,12 +101,30 @@ export default function SettingsPage() {
               />
               <CardBody className="space-y-6">
                 <div className="flex items-center gap-6 pb-6 border-b border-fleer-border">
-                  <div className="w-20 h-20 rounded-full bg-fleer-accent/10 flex items-center justify-center text-fleer-accent text-2xl font-bold font-display border-2 border-fleer-accent/20">
-                    {user?.email?.charAt(0).toUpperCase()}
+                  <div className="w-20 h-20 rounded-full bg-fleer-accent/10 flex items-center justify-center text-fleer-accent text-2xl font-bold font-display border-2 border-fleer-accent/20 overflow-hidden shadow-accent/20">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      user?.email?.charAt(0).toUpperCase()
+                    )}
                   </div>
                   <div>
-                    <Button variant="secondary" size="sm">Change Avatar</Button>
-                    <p className="text-xs text-fleer-text-muted mt-2">JPG, GIF or PNG. Max size of 2MB.</p>
+                    <input 
+                      type="file" 
+                      ref={fileInputRef} 
+                      className="hidden" 
+                      accept="image/*"
+                      onChange={handleAvatarChange}
+                    />
+                    <Button 
+                      variant="secondary" 
+                      size="sm" 
+                      icon={<Upload size={14} />}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      Change Avatar
+                    </Button>
+                    <p className="text-xs text-fleer-text-muted mt-2 font-display">JPG, GIF or PNG. Max size of 2MB.</p>
                   </div>
                 </div>
 
