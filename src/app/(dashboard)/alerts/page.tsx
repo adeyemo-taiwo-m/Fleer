@@ -1,54 +1,55 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { AlertsLog } from '@/components/alerts/AlertsLog';
-import { Card, CardHeader } from '@/components/ui/Card';
-import { useAlerts } from '@/hooks/useAlerts';
-import { AlertSeverity } from '@/types';
-import { clsx } from 'clsx';
+import React, { useState } from "react";
+import { AppShell } from "@/components/layout/AppShell";
+import { AlertsLog } from "@/components/alerts/AlertsLog";
+import { Card, CardHeader } from "@/components/ui/Card";
+import { useAlerts } from "@/hooks/useAlerts";
+import { useOrganization } from "@/hooks/useOrganization";
+import { AlertSeverity } from "@/types";
 
-type FilterTab = 'all' | 'unresolved' | AlertSeverity;
+type FilterTab = "all" | "unresolved" | AlertSeverity;
 
 const tabs: { value: FilterTab; label: string }[] = [
-  { value: 'all',        label: 'All Alerts' },
-  { value: 'unresolved', label: 'Unresolved' },
-  { value: 'critical',   label: 'Critical' },
-  { value: 'warning',    label: 'Warning' },
-  { value: 'info',       label: 'Info' },
+  { value: "all", label: "All Alerts" },
+  { value: "unresolved", label: "Unresolved" },
+  { value: "critical", label: "Critical" },
+  { value: "warning", label: "Warning" },
+  { value: "info", label: "Info" },
 ];
 
 export default function AlertsPage() {
   const { alerts, unread, resolveAlert } = useAlerts();
-  const [activeTab, setActiveTab] = useState<FilterTab>('unresolved');
+  const { org, user, logout } = useOrganization();
+  const [activeTab, setActiveTab] = useState<FilterTab>("unresolved");
 
-  const filtered = alerts.filter(alert => {
-    if (activeTab === 'all') return true;
-    if (activeTab === 'unresolved') return !alert.resolved;
+  const filtered = alerts.filter((alert) => {
+    if (activeTab === "all") return true;
+    if (activeTab === "unresolved") return !alert.resolved;
     return alert.severity === activeTab;
   });
 
   return (
-    <div className="space-y-6">
-      {/* Header Info */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-[#E2E8F0]">Anomaly Alerts</h2>
-          <p className="text-sm text-[#64748B]">{unread} unresolved alerts requiring attention</p>
-        </div>
-      </div>
-
+    <AppShell
+      title="Alerts"
+      subtitle={`${unread} unresolved`}
+      isLive={true}
+      orgName={org?.name || ""}
+      userEmail={user?.email || ""}
+      unreadAlerts={unread}
+      onLogout={logout}
+    >
       {/* Filter Tabs */}
-      <div className="flex items-center gap-1 bg-[#111827] border border-[#1E2D42] rounded-xl p-1 w-fit">
-        {tabs.map(tab => (
+      <div className="flex items-center gap-1 bg-fleer-surface border border-fleer-border rounded-xl p-1 mb-6 w-fit">
+        {tabs.map((tab) => (
           <button
             key={tab.value}
             onClick={() => setActiveTab(tab.value)}
-            className={clsx(
-              'px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150',
+            className={`px-4 py-2 rounded-lg text-sm font-display font-medium transition-all duration-150 ${
               activeTab === tab.value
-                ? 'bg-[#1A2235] text-[#E2E8F0] shadow-sm'
-                : 'text-[#64748B] hover:text-[#E2E8F0]'
-            )}
+                ? "bg-fleer-card text-fleer-text shadow-sm"
+                : "text-fleer-text-muted hover:text-fleer-text"
+            }`}
           >
             {tab.label}
           </button>
@@ -58,11 +59,13 @@ export default function AlertsPage() {
       {/* Alerts List */}
       <Card>
         <CardHeader
-          title="Incident Log"
-          subtitle={`${filtered.length} items found`}
+          title="Anomaly Alerts"
+          subtitle={`${filtered.length} ${
+            activeTab === "unresolved" ? "unresolved" : "total"
+          }`}
         />
         <AlertsLog alerts={filtered} onResolve={resolveAlert} />
       </Card>
-    </div>
+    </AppShell>
   );
 }

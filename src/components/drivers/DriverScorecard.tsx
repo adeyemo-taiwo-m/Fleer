@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Driver } from '../../types';
-import { AlertTriangle } from 'lucide-react';
-import { SCORE_COLOR } from '../../constants';
+import React from "react";
+import { Driver } from "../../types";
+import { SCORE_COLOR } from "../../constants";
+import { Card } from "../ui/Card";
 
-interface ScoreRingProps { 
-  score: number; 
-  size?: number; 
+interface ScoreRingProps {
+  score: number;
+  size?: number;
 }
 
 function ScoreRing({ score, size = 64 }: ScoreRingProps) {
@@ -17,98 +17,109 @@ function ScoreRing({ score, size = 64 }: ScoreRingProps) {
   const color = SCORE_COLOR(score);
 
   return (
-    <div className="relative flex items-center justify-center shrink-0" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        {/* Track */}
-        <circle 
-          cx={size/2} cy={size/2} r={radius} 
-          fill="none" stroke="#1E2D42" strokeWidth="4" 
-        />
-        {/* Progress */}
-        <circle
-          cx={size/2} cy={size/2} r={radius} 
-          fill="none" stroke={color} strokeWidth="4"
-          strokeDasharray={`${progress} ${circumference}`}
-          strokeLinecap="round"
-          className="transition-all duration-700 ease-out"
-        />
-      </svg>
-      {/* Score text — counter-rotate to stay upright */}
-      <span 
-        className="absolute inset-0 flex items-center justify-center font-display font-bold text-sm tracking-tighter"
-        style={{ color, transform: 'rotate(0deg)' }}
+    <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="none"
+        stroke="#1E2D42"
+        strokeWidth={4}
+      />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="none"
+        stroke={color}
+        strokeWidth={4}
+        strokeDasharray={`${progress} ${circumference}`}
+        strokeLinecap="round"
+        style={{ transition: "stroke-dasharray 0.8s ease" }}
+      />
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill={color}
+        fontSize="14"
+        fontWeight="700"
+        fontFamily="'Space Grotesk'"
+        style={{ transform: "rotate(90deg)", transformOrigin: "50% 50%" }}
       >
         {score}
-      </span>
-    </div>
+      </text>
+    </svg>
   );
 }
 
-const scoreBreakdownLabels: Record<keyof Driver['score_breakdown'], string> = {
-  unauthorized_stops: 'Unauthorized Stops',
-  fuel_anomalies:     'Fuel Anomalies',
-  route_compliance:   'Route Compliance',
-  idle_time:          'Idle Time',
-  speed_compliance:   'Speed Compliance',
+interface DriverScorecardProps {
+  driver: Driver;
+  rank?: number;
+}
+
+const scoreBreakdownLabels: Record<keyof Driver["score_breakdown"], string> = {
+  unauthorized_stops: "Unauthorized Stops",
+  fuel_anomalies: "Fuel Anomalies",
+  route_compliance: "Route Compliance",
+  idle_time: "Idle Time",
+  speed_compliance: "Speed Compliance",
 };
 
-export function DriverScorecard({ driver, rank }: { driver: Driver; rank?: number }) {
+export function DriverScorecard({ driver, rank }: DriverScorecardProps) {
   return (
-    <div className="group bg-fleer-card border border-fleer-border rounded-xl p-5 shadow-card hover:border-fleer-accent/50 hover:shadow-card-hover hover:-translate-y-[2px] transition-all duration-200">
-      
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-5">
-        <div className="relative">
-          {rank && (
-            <span className="absolute -top-1 -left-1 z-10 bg-fleer-surface border border-fleer-border text-[10px] font-display font-bold text-fleer-text-dim w-5 h-5 rounded-full flex items-center justify-center">
-              #{rank}
-            </span>
-          )}
-          <div className="w-10 h-10 rounded-full bg-fleer-accent/10 flex items-center justify-center text-fleer-accent text-sm font-display font-bold border border-fleer-accent/20">
-            {driver.name.charAt(0)}
-          </div>
+    <Card className="p-5">
+      <div className="flex items-center gap-4 mb-4">
+        {rank && (
+          <span className="text-lg font-display font-bold text-fleer-text-dim w-6 text-center">
+            #{rank}
+          </span>
+        )}
+        <div className="w-10 h-10 rounded-full bg-fleer-accent/10 flex items-center justify-center text-fleer-accent font-display font-bold">
+          {driver.name.charAt(0)}
         </div>
-
-        <div className="flex-1 min-w-0">
-          <p className="font-display font-semibold text-fleer-text text-sm leading-none tracking-tight">{driver.name}</p>
-          <p className="font-display text-[11px] text-fleer-text-muted mt-1.5 font-medium uppercase tracking-wider">{driver.trips_this_week} trips this week</p>
+        <div className="flex-1">
+          <p className="font-display font-semibold text-fleer-text">
+            {driver.name}
+          </p>
+          <p className="text-xs text-fleer-text-muted">
+            {driver.trips_this_week} trips this week
+          </p>
         </div>
-
-        <ScoreRing score={driver.score} size={52} />
+        <ScoreRing score={driver.score} />
       </div>
 
-      {/* Metrics */}
+      {/* Score Breakdown */}
       <div className="space-y-2">
-        {Object.entries(driver.score_breakdown).map(([key, value]) => {
-          const color = SCORE_COLOR(value);
-          return (
-            <div key={key} className="flex items-center gap-3">
-              <span className="font-display text-[11px] font-bold text-fleer-text-muted w-[130px] shrink-0 truncate uppercase tracking-widest">
-                {scoreBreakdownLabels[key as keyof Driver['score_breakdown']]}
-              </span>
-              <div className="flex-1 bg-fleer-surface rounded-full h-1.5 overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-700 ease-out"
-                  style={{ width: `${value}%`, backgroundColor: color }}
-                />
-              </div>
-              <span className="font-mono text-[11px] text-fleer-text-muted w-6 text-right shrink-0 tabular-nums">
-                {value}
-              </span>
+        {Object.entries(driver.score_breakdown).map(([key, value]) => (
+          <div key={key} className="flex items-center gap-2">
+            <span className="text-xs text-fleer-text-muted w-36 shrink-0 font-display">
+              {scoreBreakdownLabels[key as keyof Driver["score_breakdown"]]}
+            </span>
+            <div className="flex-1 bg-fleer-surface rounded-full h-1.5 overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${value}%`,
+                  background: SCORE_COLOR(value),
+                }}
+              />
             </div>
-          );
-        })}
+            <span className="text-xs font-mono text-fleer-text-muted w-8 text-right">
+              {value}
+            </span>
+          </div>
+        ))}
       </div>
 
-      {/* Anomaly Banner */}
       {driver.anomalies_this_week > 0 && (
-        <div className="mt-4 bg-fleer-warning/10 border border-fleer-warning/20 rounded-lg px-3 py-2 flex items-center gap-2">
-          <AlertTriangle size={12} className="text-fleer-warning" />
-          <p className="font-display text-[11px] text-fleer-warning font-bold uppercase tracking-wider">
-            {driver.anomalies_this_week} anomalies this week
+        <div className="mt-3 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2">
+          <p className="text-xs text-amber-400 font-display">
+            ⚠️ {driver.anomalies_this_week} anomalies this week
           </p>
         </div>
       )}
-    </div>
+    </Card>
   );
 }

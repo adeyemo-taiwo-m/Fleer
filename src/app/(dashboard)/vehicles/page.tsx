@@ -1,94 +1,98 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { VehicleCard } from '@/components/fleet/VehicleCard';
-import { useVehicles } from '@/hooks/useVehicles';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { VehicleStatus } from '@/types';
-import { Truck, Search } from 'lucide-react';
-import { clsx } from 'clsx';
+import React, { useState } from "react";
+import { AppShell } from "@/components/layout/AppShell";
+import { VehicleCard } from "@/components/fleet/VehicleCard";
+import { useVehicles } from "@/hooks/useVehicles";
+import { useOrganization } from "@/hooks/useOrganization";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { VehicleStatus } from "@/types";
+import { Truck } from "lucide-react";
 
-type StatusFilter = VehicleStatus | 'all';
+type StatusFilter = VehicleStatus | "all";
 
 const statusFilters: { value: StatusFilter; label: string }[] = [
-  { value: 'all',      label: 'All' },
-  { value: 'on_route', label: 'On Route' },
-  { value: 'anomaly',  label: 'Anomaly' },
-  { value: 'alert',    label: 'Alert' },
-  { value: 'idle',     label: 'Idle' },
-  { value: 'offline',  label: 'Offline' },
+  { value: "all", label: "All" },
+  { value: "on_route", label: "On Route" },
+  { value: "anomaly", label: "Anomaly" },
+  { value: "alert", label: "Alert" },
+  { value: "idle", label: "Idle" },
+  { value: "offline", label: "Offline" },
 ];
 
 export default function VehiclesPage() {
   const { vehicles, isLoading } = useVehicles();
-  const [filter, setFilter] = useState<StatusFilter>('all');
-  const [search, setSearch] = useState('');
+  const { org, user, logout } = useOrganization();
+  const [filter, setFilter] = useState<StatusFilter>("all");
+  const [search, setSearch] = useState("");
 
-  const filtered = vehicles.filter(v => {
-    const matchesFilter = filter === 'all' || v.status === filter;
+  const filtered = vehicles.filter((v) => {
+    const matchesFilter = filter === "all" || v.status === filter;
     const matchesSearch = v.plate.toLowerCase().includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-[#E2E8F0]">Fleet Inventory</h2>
-          <p className="text-sm text-[#64748B]">{vehicles.length} vehicles registered</p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
-            <input
-              type="text"
-              placeholder="Search plate..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="bg-[#111827] border border-[#1E2D42] rounded-lg pl-9 pr-4 py-2 text-sm text-[#E2E8F0] placeholder:text-[#64748B] focus:outline-none focus:border-[#00C896]/50 w-48 transition-all"
-            />
-          </div>
-          <div className="flex items-center gap-1 bg-[#111827] border border-[#1E2D42] rounded-xl p-1">
-            {statusFilters.map(f => (
-              <button
-                key={f.value}
-                onClick={() => setFilter(f.value)}
-                className={clsx(
-                  'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150',
-                  filter === f.value
-                    ? 'bg-[#1A2235] text-[#E2E8F0]'
-                    : 'text-[#64748B] hover:text-[#E2E8F0]'
-                )}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
+    <AppShell
+      title="Vehicles"
+      subtitle={`${vehicles.length} in fleet`}
+      isLive={true}
+      orgName={org?.name || ""}
+      userEmail={user?.email || ""}
+      onLogout={logout}
+    >
+      {/* Search + Filter */}
+      <div className="flex items-center gap-4 mb-6">
+        <input
+          type="text"
+          placeholder="Search by plate number..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="bg-fleer-surface border border-fleer-border rounded-lg px-4 py-2 text-sm text-fleer-text placeholder:text-fleer-text-muted focus:outline-none focus:border-fleer-accent/50 w-64 font-display"
+        />
+        <div className="flex items-center gap-1 bg-fleer-surface border border-fleer-border rounded-xl p-1">
+          {statusFilters.map((f) => (
+            <button
+              key={f.value}
+              onClick={() => setFilter(f.value)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-display font-medium transition-all ${
+                filter === f.value
+                  ? "bg-fleer-card text-fleer-text shadow-sm"
+                  : "text-fleer-text-muted hover:text-fleer-text"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
         </div>
       </div>
 
+      {/* Grid */}
       {isLoading ? (
-        <div className="py-20 flex items-center justify-center">
-          <LoadingSpinner label="Retrieving fleet data..." />
-        </div>
+        <LoadingSpinner label="Loading vehicles..." />
       ) : filtered.length === 0 ? (
-        <div className="py-20 bg-[#111827]/30 border border-dashed border-[#1E2D42] rounded-2xl">
-          <EmptyState
-            icon={<Truck className="text-[#64748B]" />}
-            title="No vehicles found"
-            description={search ? `No vehicles match "${search}"` : 'No vehicles in this category'}
-            action={search ? { label: 'Clear search', onClick: () => setSearch('') } : undefined}
-          />
-        </div>
+        <EmptyState
+          icon={<Truck className="text-fleer-text-dim" size={40} />}
+          title="No vehicles found"
+          description={
+            search
+              ? `No vehicles match "${search}"`
+              : "No vehicles in this category"
+          }
+          action={
+            search
+              ? { label: "Clear search", onClick: () => setSearch("") }
+              : undefined
+          }
+        />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filtered.map(vehicle => (
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filtered.map((vehicle) => (
             <VehicleCard key={vehicle.id} vehicle={vehicle} />
           ))}
         </div>
       )}
-    </div>
+    </AppShell>
   );
 }
