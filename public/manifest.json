@@ -1,7 +1,7 @@
 {
-  "name": "Fleer",
+  "name": "Fleer Fleet Intelligence",
   "short_name": "Fleer",
-  "description": "Fleer — your progressive web app",
+  "description": "Next-gen fleet tracking and financial anomaly detection.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0f13",
@@ -9,29 +9,11 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
-  "categories": ["utilities"],
+  "categories": ["utilities", "business"],
   "icons": [
-    {
-      "src": "/icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
     {
       "src": "/icons/icon-96x96.png",
       "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
-      "sizes": "144x144",
       "type": "image/png",
       "purpose": "maskable any"
     },
@@ -48,39 +30,22 @@
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/screenshots/wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Fleer — Desktop view"
-    },
-    {
-      "src": "/screenshots/mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Fleer — Mobile view"
-    }
-  ],
   "shortcuts": [
     {
-      "name": "Open App",
-      "url": "/",
-      "description": "Go to the home screen"
+      "name": "Live Map",
+      "url": "/map",
+      "description": "View live vehicle tracking"
+    },
+    {
+      "name": "Alerts",
+      "url": "/alerts",
+      "description": "View fleet anomalies"
     }
   ]
 }

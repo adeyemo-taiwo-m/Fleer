@@ -36,11 +36,11 @@ const jetbrainsMono = JetBrains_Mono({
 // ── Metadata (SEO + PWA) ──────────────────────────────────────────────────────
 export const metadata: Metadata = {
   title: {
-    default: "Fleer",
+    default: "Fleer Fleet Intelligence",
     template: "%s | Fleer",
   },
-  description: "Fleer — your progressive web app",
-  keywords: ["fleer", "pwa", "progressive web app"],
+  description: "Next-gen fleet tracking and financial anomaly detection.",
+  keywords: ["fleet management", "tracking", "logistics", "anomaly detection", "fintech"],
   authors: [{ name: "Fleer" }],
 
   // PWA / mobile
